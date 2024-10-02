@@ -1,0 +1,42 @@
+body {
+	background: #F2F2F2;
+	margin: 0;
+	font-family: 'Courier New', Courier, monospace;
+	padding: 30px;
+}
+
+header {
+	background: white;
+	padding: 30px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+header a:hover {
+	color: grey;
+}
+
+.logo {
+	text-decoration: none;
+	font-weight: bold;
+	color: black;
+	font-size: 1.2em;
+}
+
+.nav_links {
+	list-style:none;
+}
+
+.nav_links li {
+	display: inline-block;
+	padding: 0px 20px;
+}
+
+.nav_links li a {
+	transition: all 0.3s ease 0s;
+}
+
+.nav_links li a:hover {
+	color: grey;
+}
