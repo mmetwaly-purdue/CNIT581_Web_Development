@@ -1,7 +1,7 @@
 /* General styles for the navigation bar */
 .navbar {
     display: flex;
-    justify-content: flex-start; /* Space between icon + search + links */
+    justify-content: flex; /* Space between icon + search + links */
     align-items: center; /* Vertical alignment */
     background-color: #f5f5f5; /* Light background color */
     padding: 10px 20px; /* Padding around the navbar */
@@ -55,7 +55,7 @@
 
 /* Navigation links */
 .nav-links {
-    display: flex;
+    display: inline-flex;
     list-style: none;
     gap: 20px; /* Space between the links */
     margin-left: 20px; /* Space between the search bar and nav links */
