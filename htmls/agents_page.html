@@ -1,9 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename="main.css") }}">     
-    </head>
-    <body>
 
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/main.css">
+    <title>Sensemaking Multi-Agents</title>
+</head>
+
+<body>
+    <header id="navigation_bar"></header>
+            <nav class="navbar">
+                <div class="user-logo-container">
+                    <img src="../media/user-icon-on-transparent-background-free.png" alt="Logo" class="user-logo">
+                </div>
+                <div class="search-container">
+                    <input type="text" placeholder="Hinted search text">
+                    <button class="search-button">
+                        <img src="../media/pngtree-vector-search-icon.jpg" alt="Search Icon">
+                    </button>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="homepage.html">Home</a></li>
+                    <li><a href="agents_page.html">Agents</a></li>
+                    <li><a href="create.html">Create</a></li>
+                    <li><a href="about_us_page.html">About US</a></li>
+                    <li><a href="user_workflow_page.html">Workflow</a></li>
+                </ul>
+            </nav>
+            <h1>Welcome to the Multi-Agent Sensemaking Platform</h1>
+            <p>An interactive tool to help you make sense of complex data using collaborative agents.</p>
+            <title>Home - Multi-Agent Sensemaking</title> 
+        </header>
+
+    <main>
+        <div class="main-content">
+            <h1>Sensemaking Multi-Agents</h1>
+            <p>Text describing our agents.</p>
+
+            <div class="controls">
+                <button id="sort-button">Sort: A-Z</button>
+                <button id="filter-button">Filter: Accuracy - 100%</button>
+                <button id="create-group-button">Create Group</button>
+            </div>
+
+            <div class="agents-container">
+                <button class="agent-button">Agent 1</button>
+                <button class="agent-button">Agent 2</button>
+                <button class="agent-button">Agent 3</button>
+                <button class="agent-button">Agent 4</button>
+                <button class="agent-button">Agent 5</button>
+                <button class="agent-button">Agent 6</button>
+                <button class="agent-button">Agent 7</button>
+                <button class="agent-button">Agent 8</button>
+                <button class="agent-button">Agent 9</button>
+                <button class="agent-button">Agent 10</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">Ⓑ</div>
+            <div class="footer-links">
+                <a href="#"><img src="instagram.png" alt="Instagram"></a>
+                <a href="#"><img src="twitter.png" alt="Twitter"></a>
+                <a href="#"><img src="youtube.png" alt="YouTube"></a>
+                <a href="#"><img src="linkedin.png" alt="LinkedIn"></a>
+            </div>
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h4>Use cases</h4>
+                    <ul>
+                        <li><a href="#">UI design</a></li>
+                        <li><a href="#">UX design</a></li>
+                        <li><a href="#">Wireframing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="#">Design</a></li>
+                        <li><a href="#">Prototyping</a></li>
+                        <li><a href="#">Development features</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Best practices</a></li>
+                        <li><a href="#">Colors</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../static/main.js"></script>
+</body>
+
 </html>

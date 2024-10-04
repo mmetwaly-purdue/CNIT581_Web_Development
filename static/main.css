@@ -1,36 +1,42 @@
 /* General styles for the navigation bar */
 .navbar {
     display: flex;
-    justify-content: flex; /* Space between icon + search + links */
+    justify-content:space-between;
     align-items: center; /* Vertical alignment */
     background-color: #f5f5f5; /* Light background color */
     padding: 10px 20px; /* Padding around the navbar */
     font-family: Arial, sans-serif;
     position: relative; /* Ensures proper flow of elements */
-    height: 30px; /* Consistent height for the navigation bar */
+    height: 45px; /* Consistent height for the navigation bar */
 }
 
-/* Logo (user icon) */
-.logo-container {
+.logo-search-container {
     display: flex;
     align-items: center;
 }
+/* Logo (user icon) */
+.user-logo-container {
+    display: flex-start;
+    align-items: center;
+    margin-right: 10px;
+}
 
-.logo {
-    width: 35px; /* Adjust the size of the logo */
-    height: auto;
+.user-logo {
+    width: 30px; /* Adjust the size of the logo */
+    height: 30px;
 }
 
 /* Search bar container */
 .search-container {
     display: flex;
+    justify-content: center;
     align-items: center;
     background-color: #e9e7f6; /* Light purple background */
     padding: 5px 10px;
     border-radius: 25px; /* Rounded corners */
-    margin-left: 5px; /* Space from the user icon */
-    max-width: 200px; /* Adjust the max width of the search bar */
-    margin-right: 400px;
+    outline: none;
+    padding: 5px;
+    width: 100%;
 }
 
 .search-container input {
@@ -49,16 +55,18 @@
 }
 
 .search-button img {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
 }
 
 /* Navigation links */
 .nav-links {
-    display: inline-flex;
-    list-style: none;
+    display: flex;
+    justify-content: flex-start;
     gap: 20px; /* Space between the links */
     margin-left: 20px; /* Space between the search bar and nav links */
+    unicode-bidi:isolate;
+    list-style-type:none;
 }
 
 .nav-links a {
@@ -101,6 +109,127 @@ footer nav ul li {
 }
 
 footer nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+
+
+
+
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Header Styling 
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f5f5f5;
+    padding: 10px 20px;
+}
+*/
+.logo {
+    font-size: 24px;
+}
+
+.search-bar {
+    padding: 8px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    margin: 0 10px;
+}
+
+/* Main Content Styling */
+.main-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.controls {
+    margin: 20px 0;
+}
+
+button {
+    padding: 10px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #ccc;
+}
+
+button:hover {
+    background-color: #bbb;
+}
+
+.agents-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.agent-button {
+    width: 150px;
+    height: 100px;
+    background-color: #d3d3d3;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.agent-button:hover {
+    background-color: #c3c3c3;
+}
+
+/* Footer Styling */
+.footer-container {
+    background-color: #f5f5f5;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.footer-logo {
+    font-size: 30px;
+}
+
+.footer-links a img {
+    width: 25px;
+    margin-right: 10px;
+}
+
+.footer-columns {
+    display: flex;
+}
+
+.footer-column {
+    margin-left: 20px;
+}
+
+.footer-column h4 {
+    margin-bottom: 10px;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column ul li a {
     text-decoration: none;
     color: #333;
 }
