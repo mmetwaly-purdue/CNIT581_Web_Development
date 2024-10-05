@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link type="text/css" rel="stylesheet" href="../static/main.css"> 
+        
+    </head>
+    <body> 
+        <header id="navigation_bar"></header>
+            <nav class="navbar">
+                <div class="logo-search-container">
+                    <!-- Logo (User Icon) -->
+                    <div class="user-logo-container">
+                        <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo">
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="search-container">
+                        <input type="text" placeholder="Hinted search text">
+                        <button class="search-button">
+                            <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
+                        </button>
+                    </div>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('home_page') }}">Home</a></li>
+                    <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
+                    <li><a href="{{ url_for('create_page') }}">Create</a></li>
+                    <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+                    <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
+                </ul>
+                <!-- Sign In and Register Buttons in Header -->
+                <div class="auth-buttons">
+                    <button id="signInBtn">Sign In</button>
+                    <button id="registerBtn">Register</button>
+                </div>
+            </nav>
+        </header>
+        <header class="user-workflow-section">
+            <h1>Agent Workflow</h1>
+            <h2>Make Connections</h2>
+        </header>
+    
+        <!-- Button Section -->
+        <div class="workflow-button-container">
+            <button class="workflow-action-button">Add</button>
+            <button class="workflow-action-button">Add Connection</button>
+            <button class="workflow-action-button">Delete</button>
+            <button class="workflow-action-button">Highlight</button>
+            <button class="workflow-action-button">Refresh</button>
+            <button class="workflow-action-button">Hide</button>
+        </div>
+    
+        <!-- Agents Section (Grid Layout) -->
+        <div class="workflow-agent-grid">
+            <div class="workflow-agent-box">Agent 1 (NAMES)</div>
+            <div class="workflow-agent-box">Agent 2 (Vehicles)</div>
+            <div class="workflow-agent-box">Group 1 (NAMES + Suspects)</div>
+            <div class="workflow-agent-box">Agent 4 (Crime Scenes)</div>
+            <div class="workflow-agent-box">Agent 5 (Locations)</div>
+            <div class="workflow-agent-box">Agent 6 (Weapons)</div>
+            <div class="workflow-agent-box">Agent 7 (Suspects)</div>
+            <div class="workflow-agent-box">Agent 8 (Dates)</div>
+            <div class="workflow-agent-box">Agent 9 (Point of Interest)</div>
+        </div>
+    
+        <!-- Right-side section (Connections Form) -->
+        <div class="workflow-right-side-container">
+            <h3>Which Connections do you want to explore?</h3>
+            <textarea placeholder="Enter a Connection" rows="4"></textarea>
+        </div>
+    
+        <!-- Footer with additional links -->
+        <footer>
+            <nav>
+                <ul>
+                    <li><a href="about_us_page.html">About Us</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </nav>
+        </footer>
+    
+        <script src="../static/main.js"></script> <!-- Linking to your JavaScript file -->
+	</body>
+</html>
