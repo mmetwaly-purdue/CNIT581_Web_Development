@@ -18,7 +18,28 @@ $(document).ready(function () {
     $('#closeRegister').on('click', function () {
         $('#registerModal').css('display', 'none');
     });
-
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        // Agent data containing descriptions
+        const agentDescriptions = {
+            "Agent 1": "Description of agent 'Agent 1 is trained to find significant characters/names in mystery' Provides name, age, occupation (if possible), demographics.",
+            "Agent 2": "Description of agent 'Agent 2 performs keyword extraction in scientific articles'.",
+            "Agent 3": "Description of agent 'Agent 3 analyzes sentiment in social media posts'.",
+            // Add descriptions for the rest of the agents
+        };
+    
+        // Add tooltips to agent buttons
+        document.querySelectorAll(".agent-button").forEach(button => {
+            const agentName = button.textContent.trim();
+            if (agentDescriptions[agentName]) {
+                const tooltip = document.createElement("div");
+                tooltip.className = "tooltip";
+                tooltip.textContent = agentDescriptions[agentName];
+                button.appendChild(tooltip);
+            }
+        });
+    });
+    
     // Close modals if user clicks outside the modal content
     $(window).on('click', function (event) {
         if (event.target === document.getElementById('signInModal')) {

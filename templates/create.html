@@ -1,51 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>  
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link type="text/css" rel="stylesheet" href="../static/main.css"> 
-        <title>Home - Multi-Agent Sensemaking</title> 
-    </head>
-    <body> 
-        <header id="navigation_bar"></header>
-            <nav class="navbar">
-                <div class="logo-search-container">
-                    <!-- Logo (User Icon) -->
-                    <div class="user-logo-container">
-                        <img src="../media/user-icon-on-transparent-background-free.png" alt="Logo" class="user-logo">
-                    </div>
 
-                    <!-- Search Bar -->
-                    <div class="search-container">
-                        <input type="text" placeholder="Hinted search text">
-                        <button class="search-button">
-                            <img src="../media/pngtree-vector-search-icon.jpg" alt="Search Icon">
-                        </button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="../static/main.css">
+    <title>Create New Agent - Multi-Agent Sensemaking</title>
+</head>
+
+<body>
+    <header id="navigation_bar"></header>
+    <nav class="navbar">
+        <div class="logo-search-container">
+            <!-- Logo (User Icon) -->
+            <div class="user-logo-container">
+                <img src="../media/user-icon-on-transparent-background-free.png" alt="Logo" class="user-logo">
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" placeholder="Hinted search text">
+                <button class="search-button">
+                    <img src="../media/pngtree-vector-search-icon.jpg" alt="Search Icon">
+                </button>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="homepage.html">Home</a></li>
+            <li><a href="agents_page.html">Agents</a></li>
+            <li><a href="create.html">Create</a></li>
+            <li><a href="about_us_page.html">About US</a></li>
+            <li><a href="user_workflow_page.html">Workflow</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="create-agent">
+            <div class="create-agent-header">
+                <h2>Create a New Agent</h2>
+                <p>Where you create agents</p>
+            </div>
+            <div class="create-agent-container">
+                <div class="create-agent-form">
+                    <div class="form-group">
+                        <label for="agent-name">Name:</label>
+                        <input type="text" id="agent-name" placeholder="Type agent name...">
+                    </div>
+                    <div class="form-group">
+                        <label for="agent-type">Type:</label>
+                        <input type="text" id="agent-type" placeholder="What type of agent is it?">
+                    </div>
+                    <div class="form-group">
+                        <label for="agent-description">Description:</label>
+                        <input type="text" id="agent-description" placeholder="Describe the agent">
+                    </div>
+                    <div class="form-group">
+                        <label for="search-key-terms">Search key terms:</label>
+                        <input type="text" id="search-key-terms" placeholder="What key terms is it looking for?">
+                    </div>
+                    <div class="form-group">
+                        <label for="output-structure">Output Structure:</label>
+                        <input type="text" id="output-structure" placeholder="Choose a result structure">
                     </div>
                 </div>
-                <ul class="nav-links">
-                    <li><a href="homepage.html">Home</a></li>
-                    <li><a href="agents_page.html">Agents</a></li>
-                    <li><a href="create.html">Create</a></li>
-                    <li><a href="about_us_page.html">About US</a></li>
-                    <li><a href="user_workflow_page.html">Workflow</a></li>
-                </ul>
-            </nav>
-        </header>
-        <!-- Main content area -->
+                <div class="create-agent-options">
+                    <div class="form-group">
+                        <p>Do you want to add it to a group?</p>
+                        <label><input type="radio" name="add-to-group" value="yes"> Yes</label>
+                        <label><input type="radio" name="add-to-group" value="no"> No</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="group-name">(Optional) What group do you want it in?</label>
+                        <input type="text" id="group-name" placeholder="Type group name">
+                    </div>
+                    <div class="form-group">
+                        <p>Print line number/document?</p>
+                        <label><input type="radio" name="print-line" value="yes"> Yes</label>
+                        <label><input type="radio" name="print-line" value="no"> No</label>
+                    </div>
+                    <div class="form-group">
+                        <p>Automatically connect results with other agent results?</p>
+                        <label><input type="radio" name="auto-connect" value="yes"> Yes</label>
+                        <label><input type="radio" name="auto-connect" value="no"> No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="create-agent-button">
+                <button>Create New Agent</button>
+            </div>
+        </section>
+    </main>
 
-    
-        <!-- Footer with additional links -->
-        <footer>
-            <nav>
-                <ul>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                </ul>
-            </nav>
-        </footer>
-    
-        <script src="../static/main.js"></script> <!-- Linking to your JavaScript file -->
-	</body>
+    <footer>
+        <nav>
+            <ul>
+                <li><a href="about_us_page.html">About Us</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+            </ul>
+        </nav>
+    </footer>
+
+    <script src="../static/main.js"></script>
+</body>
+
 </html>

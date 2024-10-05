@@ -1,9 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename="main.css") }}">
-    </head>
-    <body>
 
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="../static/main.css">
+    <title>Agent Details - Multi-Agent Sensemaking</title>
+</head>
+
+<body>
+   <header id="navigation_bar"></header>
+<nav class="navbar">
+    <div class="logo-search-container">
+        <!-- Logo (User Icon) -->
+        <div class="user-logo-container">
+            <img src="../media/user-icon-on-transparent-background-free.png" alt="Logo" class="user-logo">
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" placeholder="Hinted search text">
+            <button class="search-button">
+                <img src="../media/pngtree-vector-search-icon.jpg" alt="Search Icon">
+            </button>
+        </div>
+    </div>
+    <ul class="nav-links">
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="agents_page.html">Agents</a></li>
+        <li><a href="create.html">Create</a></li>
+        <li><a href="about_us_page.html">About US</a></li>
+        <li><a href="user_workflow_page.html">Workflow</a></li>
+    </ul>
+</nav>
+
+
+    <main>
+        <section class="agent-details">
+            <div class="agent-header">
+                <h2>Want to publish your Agent for everyone to use? (send your agent to our development team)</h2>
+                <button class="publish-button">Publish</button>
+            </div>
+            <div class="agent-info-container">
+                <div class="agent-image">
+                    <img src="../media/placeholder-image.png" alt="Agent Image">
+                </div>
+                <div class="agent-details-content">
+                    <div class="agent-detail-row">
+                        <label for="agent-name">Name:</label>
+                        <input type="text" id="agent-name" value='"Crime Scene" Agent' readonly>
+                    </div>
+                    <div class="agent-detail-row">
+                        <label for="created-by">Created by:</label>
+                        <input type="text" id="created-by" value="usernameXX" readonly>
+                    </div>
+                    <div class="agent-detail-row">
+                        <label for="date-created">Date Created:</label>
+                        <input type="text" id="date-created" value="2024-09-06T13:52:10Z" readonly>
+                    </div>
+                    <div class="agent-description">
+                        <h4>Description</h4>
+                        <textarea readonly>Text Describing the Agent.</textarea>
+                    </div>
+                    <div class="output-structure">
+                        <h4>Output Structure</h4>
+                        <textarea readonly>Example Output structure</textarea>
+                    </div>
+                    <div class="agent-actions">
+                        <button class="upload-documents-button">Upload Documents</button>
+                        <button class="run-agent-button">Run Agent</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+    <nav>
+        <ul>
+            <li><a href="about_us_page.html">About Us</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+    </nav>
+</footer>
+
+
+    <script src="../static/main.js"></script>
+</body>
+
 </html>
