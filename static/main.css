@@ -618,3 +618,75 @@ textarea {
 .agent-button:hover .tooltip {
     display: block;
 }
+
+/* Create a New Agent Page Specific Styling */
+.create-agent {
+    padding: 20px;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+.create-agent-header {
+    background-color: #ccc;
+    padding: 20px;
+    text-align: center;
+}
+
+.create-agent-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 40px;
+}
+
+.create-agent-form, .create-agent-options {
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+.form-group p {
+    margin: 0;
+    font-weight: bold;
+}
+
+.form-group label input[type="radio"] {
+    margin-right: 5px;
+}
+
+.create-agent-button {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.create-agent-button button {
+    padding: 15px 30px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.create-agent-button button:hover {
+    background-color: #bbb;
+}
