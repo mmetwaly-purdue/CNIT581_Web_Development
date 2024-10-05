@@ -54,9 +54,9 @@ def privacy_page():
 def terms_page():
 	return flask.render_template("terms.html")
 
-@app.route('/create_Agent')
+@app.route('/create_agent')
 def create_page():
-	return flask.render_template("create_new_agent_page.html")
+	return flask.render_template("create.html")
 
 @app.route('/agent_Detail')
 def detail_page():

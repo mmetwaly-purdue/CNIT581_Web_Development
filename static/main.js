@@ -19,26 +19,24 @@ $(document).ready(function () {
         $('#registerModal').css('display', 'none');
     });
     
-    document.addEventListener("DOMContentLoaded", function () {
-        // Agent data containing descriptions
-        const agentDescriptions = {
-            "Agent 1": "Description of agent 'Agent 1 is trained to find significant characters/names in mystery' Provides name, age, occupation (if possible), demographics.",
-            "Agent 2": "Description of agent 'Agent 2 performs keyword extraction in scientific articles'.",
-            "Agent 3": "Description of agent 'Agent 3 analyzes sentiment in social media posts'.",
-            // Add descriptions for the rest of the agents
-        };
-    
-        // Add tooltips to agent buttons
-        document.querySelectorAll(".agent-button").forEach(button => {
-            const agentName = button.textContent.trim();
+    // Agent data containing descriptions
+    const agentDescriptions = {
+        "Agent 1": "Description of agent 'Agent 1 is trained to find significant characters/names in mystery'. Provides name, age, occupation (if possible), demographics.",
+        "Agent 2": "Description of agent 'Agent 2 performs keyword extraction in scientific articles'.",
+        "Agent 3": "Description of agent 'Agent 3 analyzes sentiment in social media posts'.",
+        // Add descriptions for the rest of the agents
+    };
+
+    // Add tooltips to agent buttons if they exist
+    if ($(".agent-button").length > 0) {
+        $(".agent-button").each(function () {
+            const agentName = $(this).text().trim();
             if (agentDescriptions[agentName]) {
-                const tooltip = document.createElement("div");
-                tooltip.className = "tooltip";
-                tooltip.textContent = agentDescriptions[agentName];
-                button.appendChild(tooltip);
+                const tooltip = $("<div class='tooltip'></div>").text(agentDescriptions[agentName]);
+                $(this).append(tooltip);
             }
         });
-    });
+    }
     
     // Close modals if user clicks outside the modal content
     $(window).on('click', function (event) {
