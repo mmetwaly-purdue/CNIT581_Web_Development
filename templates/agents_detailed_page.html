@@ -9,30 +9,36 @@
 </head>
 
 <body>
-   <header id="navigation_bar"></header>
-<nav class="navbar">
-    <div class="logo-search-container">
-        <!-- Logo (User Icon) -->
-        <div class="user-logo-container">
-            <img src="../media/user-icon-on-transparent-background-free.png" alt="Logo" class="user-logo">
-        </div>
+    <header id="navigation_bar"></header>
+    <nav class="navbar">
+        <div class="logo-search-container">
+            <!-- Logo (User Icon) -->
+            <div class="user-logo-container">
+                <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo">
+            </div>
 
-        <!-- Search Bar -->
-        <div class="search-container">
-            <input type="text" placeholder="Hinted search text">
-            <button class="search-button">
-                <img src="../media/pngtree-vector-search-icon.jpg" alt="Search Icon">
-            </button>
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" placeholder="Hinted search text">
+                <button class="search-button">
+                    <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
+                </button>
+            </div>
         </div>
-    </div>
-    <ul class="nav-links">
-        <li><a href="homepage.html">Home</a></li>
-        <li><a href="agents_page.html">Agents</a></li>
-        <li><a href="create.html">Create</a></li>
-        <li><a href="about_us_page.html">About US</a></li>
-        <li><a href="user_workflow_page.html">Workflow</a></li>
-    </ul>
-</nav>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home_page') }}">Home</a></li>
+            <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
+            <li><a href="{{ url_for('create_page') }}">Create</a></li>
+            <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+            <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
+        </ul>
+        <!-- Sign In and Register Buttons in Header -->
+        <div class="auth-buttons">
+            <button id="signInBtn">Sign In</button>
+            <button id="registerBtn">Register</button>
+        </div>
+    </nav>
+</header>
 
 
     <main>
@@ -75,18 +81,17 @@
         </section>
     </main>
 
+    <!-- Footer with additional links -->
     <footer>
-    <nav>
-        <ul>
-            <li><a href="about_us_page.html">About Us</a></li>
-            <li><a href="terms.html">Terms of Service</a></li>
-            <li><a href="privacy.html">Privacy Policy</a></li>
-        </ul>
-    </nav>
-</footer>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+                <li><a href="{{ url_for('terms_page') }}">Terms of Service</a></li>
+                <li><a href="{{ url_for('privacy_page') }}">Privacy Policy</a></li>
+            </ul>
+        </nav>
+    </footer>
 
-
-    <script src="../static/main.js"></script>
+    <script href="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
 </body>
-
 </html>

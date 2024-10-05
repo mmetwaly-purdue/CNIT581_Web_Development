@@ -61,45 +61,17 @@
         </div>
     </main>
 
-    <footer>
-        <div class="footer-container">
-            <div class="footer-logo">Ⓑ</div>
-            <div class="footer-links">
-                <a href="#"><img src="instagram.png" alt="Instagram"></a>
-                <a href="#"><img src="twitter.png" alt="Twitter"></a>
-                <a href="#"><img src="youtube.png" alt="YouTube"></a>
-                <a href="#"><img src="linkedin.png" alt="LinkedIn"></a>
-            </div>
-            <div class="footer-columns">
-                <div class="footer-column">
-                    <h4>Use cases</h4>
-                    <ul>
-                        <li><a href="#">UI design</a></li>
-                        <li><a href="#">UX design</a></li>
-                        <li><a href="#">Wireframing</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Explore</h4>
-                    <ul>
-                        <li><a href="#">Design</a></li>
-                        <li><a href="#">Prototyping</a></li>
-                        <li><a href="#">Development features</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Best practices</a></li>
-                        <li><a href="#">Colors</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+   <!-- Footer with additional links -->
+   <footer>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+            <li><a href="{{ url_for('terms_page') }}">Terms of Service</a></li>
+            <li><a href="{{ url_for('privacy_page') }}">Privacy Policy</a></li>
+        </ul>
+    </nav>
+</footer>
 
-    <script src="../static/main.js"></script>
+<script href="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
 </body>
-
 </html>
