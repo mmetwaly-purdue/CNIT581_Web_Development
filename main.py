@@ -33,6 +33,8 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
+#Create agents list
+
 
 @app.route('/homepage')
 def home_page():
@@ -64,6 +66,8 @@ def detail_page():
 
 @app.route('/agents')
 def agents_page():
+    
+    #then pass through to template -> flask.render_template("agents_page.html", agents_list)
 	return flask.render_template("agents_page.html")
 
 
