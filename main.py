@@ -81,26 +81,26 @@ def register():
     if not username or not password or not email:
         return jsonify({"message": "Missing fields"}), 400
 
-    hashed_password = generate_password_hash(password, method='sha256')
-
-    new_user = User(username=username, password=hashed_password, email=email)
+    new_user = User(username=username, password=password, email=email)  # Store password as plain text
 
     try:
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"message": "User registered successfully"}), 201
+        return jsonify({"message": "User registered successfully", "username": username}), 201
     except Exception as e:
-        print(str(e))  # Print the exception to the server log
+        print(f"Error during registration: {str(e)}")  # Print the exception for debugging
         return jsonify({"message": "Username or email already exists"}), 400
 
 # Route to handle user sign-in
 @app.route('/signin', methods=['POST'])
 def signin():
     data = request.json
-    user = User.query.filter_by(username=data['username']).first()
+    username = data.get('username')
+    password = data.get('password')
 
-    if user and check_password_hash(user.password, data['password']):
-        return jsonify({"message": "Signed in successfully"}), 200
+    user = User.query.filter_by(username=username).first()
+    if user and user.password == password:  # Directly compare plain text passwords
+        return jsonify({"message": "Signed in successfully", "username": username}), 200
     else:
         return jsonify({"message": "Invalid credentials"}), 401
 

@@ -12,7 +12,12 @@
                 <div class="logo-search-container">
                     <!-- Logo (User Icon) -->
                     <div class="user-logo-container">
-                        <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo">
+                        <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo" id="userLogo">
+                        <!-- Logout Popup -->
+                        <div id="logoutPopup" class="logout-popup">
+                            <p>Are you sure you want to logout?</p>
+                            <button id="confirmLogout">Logout</button>
+                        </div>
                     </div>
 
                     <!-- Search Bar -->
@@ -119,6 +124,6 @@
             </nav>
         </footer>
     
-        <script href="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
+        <script src="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
 	</body>
 </html>

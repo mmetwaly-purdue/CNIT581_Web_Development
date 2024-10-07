@@ -220,6 +220,36 @@ button:hover {
     padding: 20px 0;
 
 }
+
+.logout-popup {
+    display: none;
+    position: absolute;
+    top: 50px; /* Adjust based on your layout */
+    right: 10px; /* Align with user icon */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.logout-popup p {
+    margin: 0 0 10px;
+}
+
+.logout-popup button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.logout-popup button:hover {
+    background-color: #c9302c;
+}
+
 .workflow-example-section {
     background-color: #fff;
     padding: 50px 20px; /* Add padding around the grid */
@@ -250,6 +280,12 @@ button:hover {
     color: #333;
 }
 
+.connection-line {
+    position: absolute;
+    background-color: black;
+    height: 2px;
+    z-index: -1;
+}
 /*Terms of service content style*/
 .tos-header {
     background-color: #333;
