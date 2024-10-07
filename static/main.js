@@ -38,6 +38,16 @@ $(document).ready(function () {
     $(document).on('click', '#closeRegister', function () {
         $('#registerModal').css('display', 'none');
     });
+
+    // Open Delete Agent Modal
+    $('.workflow-action-button').eq(3).on('click', function () {
+        $('#deleteAgentModal').css('display', 'flex');
+    });
+
+    // Close Delete Agent Modal
+    $('#closeDeleteAgentModal').on('click', function () {
+        $('#deleteAgentModal').css('display', 'none');
+    });
     
     // Agent data containing descriptions
     const agentDescriptions = {
@@ -125,14 +135,6 @@ $(document).ready(function () {
                 alert('Failed to sign in. Please try again.');
             }
         });
-    });
-
-    // Function to add an agent box
-    $('.workflow-action-button').eq(0).on('click', function () {
-        const agentName = `Agent ${agentCounter}`;
-        const agentBox = $(`<div class="workflow-agent-box">${agentName}</div>`);
-        $('.workflow-agent-grid').append(agentBox);
-        agentCounter++;
     });
 
     // Function to delete the last agent box
@@ -239,6 +241,34 @@ $(document).ready(function () {
     $(document).on('click', function (e) {
         if (!$(e.target).closest('#userLogo').length && !$(e.target).closest('#logoutPopup').length) {
             $('#logoutPopup').hide();
+        }
+    });
+
+    // Confirm Delete Agent
+    $('#confirmDeleteAgent').on('click', function () {
+        const agentNameOrId = $('#agentToDelete').val().trim();
+
+        if (agentNameOrId) {
+            // Find and delete the agent with the specified name or ID
+            const agentBox = $(`.workflow-agent-box:contains(${agentNameOrId})`).first();
+            if (agentBox.length) {
+                agentBox.remove();
+                alert(`Agent "${agentNameOrId}" has been deleted.`);
+            } else {
+                alert("Agent not found.");
+            }
+            $('#agentToDelete').val(''); // Clear input field
+        } else {
+            alert("Please enter the name or ID of the agent to delete.");
+        }
+
+        $('#deleteAgentModal').css('display', 'none'); // Close the modal
+    });
+
+    // Close modals if user clicks outside the modal content
+    $(window).on('click', function (event) {
+        if ($(event.target).is('#deleteAgentModal')) {
+            $('#deleteAgentModal').css('display', 'none');
         }
     });
 });

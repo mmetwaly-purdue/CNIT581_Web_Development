@@ -286,6 +286,41 @@ button:hover {
     height: 2px;
     z-index: -1;
 }
+
+#deleteAgentModal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#deleteAgentModal .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    position: relative;
+}
+
+#deleteAgentModal .modal-content input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+#deleteAgentModal .modal-content button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 /*Terms of service content style*/
 .tos-header {
     background-color: #333;

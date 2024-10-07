@@ -74,7 +74,6 @@
         </div>
         <!-- Button Section -->
         <div class="workflow-button-container">
-            <button class="workflow-action-button">Add Agent</button>
             <button class="workflow-action-button">Add Connection</button>
             <button class="workflow-action-button">Delete Connection</button>
             <button class="workflow-action-button">Highlight Connection</button>
@@ -100,7 +99,16 @@
             <h3>Which Connections do you want to explore?</h3>
             <textarea id = "workflow-textarea" placeholder="Enter a Connection (Example: Agent 1 AND Agent 2)" rows="4"></textarea>
         </div>
-    
+        <!-- Delete Agent Modal -->
+        <div id="deleteAgentModal" class="modal">
+            <div class="modal-content">
+                <span id="closeDeleteAgentModal" class="close">&times;</span>
+                <h2>Delete Agent</h2>
+                <label for="agentToDelete">Enter the agent's name or ID:</label>
+                <input type="text" id="agentToDelete" placeholder="Agent name or ID" required>
+                <button id="confirmDeleteAgent">Delete</button>
+            </div>
+        </div>
         <!-- Footer with additional links -->
         <footer>
             <nav>
