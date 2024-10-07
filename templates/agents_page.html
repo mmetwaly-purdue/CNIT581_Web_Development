@@ -5,40 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Sensemaking Multi-Agents</title>
 </head>
 
 <body>
     <header id="navigation_bar"></header>
-            <nav class="navbar">
-                <div class="logo-search-container">
-                    <!-- Logo (User Icon) -->
-                    <div class="user-logo-container">
-                        <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo">
-                    </div>
+    <nav class="navbar">
+        <div class="logo-search-container">
+            <!-- Logo (User Icon) -->
+            <div class="user-logo-container">
+                <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo">
+            </div>
 
-                    <!-- Search Bar -->
-                    <div class="search-container">
-                        <input type="text" placeholder="Hinted search text">
-                        <button class="search-button">
-                            <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
-                        </button>
-                    </div>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="{{ url_for('home_page') }}">Home</a></li>
-                    <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
-                    <li><a href="{{ url_for('create_page') }}">Create</a></li>
-                    <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
-                    <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
-                </ul>
-                <!-- Sign In and Register Buttons in Header -->
-                <div class="auth-buttons">
-                    <button id="signInBtn">Sign In</button>
-                    <button id="registerBtn">Register</button>
-                </div>
-            </nav>
-        </header>
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" placeholder="Hinted search text">
+                <button class="search-button">
+                    <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
+                </button>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home_page') }}">Home</a></li>
+            <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
+            <li><a href="{{ url_for('create_page') }}">Create</a></li>
+            <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+            <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
+        </ul>
+        <!-- Sign In and Register Buttons in Header -->
+        <div class="auth-buttons">
+            <button id="signInBtn">Sign In</button>
+            <button id="registerBtn">Register</button>
+        </div>
+    </nav>
+    </header>
 
     <main>
         <div class="main-content">
@@ -51,17 +52,12 @@
                 <button id="create-group-button">Create Group</button>
             </div>
 
+            <!-- Container for dynamically generated agent buttons -->
             <div class="agents-container">
-                <button class="agent-button">Agent 1</button>
-                <button class="agent-button">Agent 2</button>
-                <button class="agent-button">Agent 3</button>
-                <button class="agent-button">Agent 4</button>
-                <button class="agent-button">Agent 5</button>
-                <button class="agent-button">Agent 6</button>
-                <button class="agent-button">Agent 7</button>
-                <button class="agent-button">Agent 8</button>
-                <button class="agent-button">Agent 9</button>
-                <button class="agent-button">Agent 10</button>
+                <button class="agent-button">Default Agent 1</button>
+                <button class="agent-button">Default Agent 2</button>
+                <button class="agent-button">Default Agent 3</button>
+                <!-- New agent buttons will be appended here -->
             </div>
         </div>
     </main>
@@ -77,6 +73,6 @@
         </nav>
     </footer>
 
-    <script href="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
 </body>
 </html>

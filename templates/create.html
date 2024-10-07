@@ -5,40 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="text/css" rel="stylesheet" href="../static/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Create New Agent - Multi-Agent Sensemaking</title>
 </head>
 
 <body>
     <header id="navigation_bar"></header>
-            <nav class="navbar">
-                <div class="logo-search-container">
-                    <!-- Logo (User Icon) -->
-                    <div class="user-logo-container">
-                        <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo">
-                    </div>
+    <nav class="navbar">
+        <div class="logo-search-container">
+            <!-- Logo (User Icon) -->
+            <div class="user-logo-container">
+                <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo">
+            </div>
 
-                    <!-- Search Bar -->
-                    <div class="search-container">
-                        <input type="text" placeholder="Hinted search text">
-                        <button class="search-button">
-                            <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
-                        </button>
-                    </div>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="{{ url_for('home_page') }}">Home</a></li>
-                    <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
-                    <li><a href="{{ url_for('create_page') }}">Create</a></li>
-                    <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
-                    <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
-                </ul>
-                <!-- Sign In and Register Buttons in Header -->
-                <div class="auth-buttons">
-                    <button id="signInBtn">Sign In</button>
-                    <button id="registerBtn">Register</button>
-                </div>
-            </nav>
-        </header>
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" placeholder="Hinted search text">
+                <button class="search-button">
+                    <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
+                </button>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home_page') }}">Home</a></li>
+            <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
+            <li><a href="{{ url_for('create_page') }}">Create</a></li>
+            <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+            <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
+        </ul>
+        <!-- Sign In and Register Buttons in Header -->
+        <div class="auth-buttons">
+            <button id="signInBtn">Sign In</button>
+            <button id="registerBtn">Register</button>
+        </div>
+    </nav>
+    </header>
 
     <main>
         <section class="create-agent">
@@ -73,26 +74,26 @@
                     <div class="form-group">
                         <p>Do you want to add it to a group?</p>
                         <label><input type="radio" name="add-to-group" value="yes"> Yes</label>
-                        <label><input type="radio" name="add-to-group" value="no"> No</label>
+                        <label><input type="radio" name="add-to-group" value="no" checked> No</label>
                     </div>
                     <div class="form-group">
                         <label for="group-name">(Optional) What group do you want it in?</label>
-                        <input type="text" id="group-name" placeholder="Type group name">
+                        <input type="text" id="group-name" placeholder="Type group name" disabled>
                     </div>
                     <div class="form-group">
                         <p>Print line number/document?</p>
                         <label><input type="radio" name="print-line" value="yes"> Yes</label>
-                        <label><input type="radio" name="print-line" value="no"> No</label>
+                        <label><input type="radio" name="print-line" value="no" checked> No</label>
                     </div>
                     <div class="form-group">
                         <p>Automatically connect results with other agent results?</p>
                         <label><input type="radio" name="auto-connect" value="yes"> Yes</label>
-                        <label><input type="radio" name="auto-connect" value="no"> No</label>
+                        <label><input type="radio" name="auto-connect" value="no" checked> No</label>
                     </div>
                 </div>
             </div>
             <div class="create-agent-button">
-                <button>Create New Agent</button>
+                <button id="createAgentButton">Create New Agent</button>
             </div>
         </section>
     </main>
@@ -108,6 +109,6 @@
         </nav>
     </footer>
 
-    <script href="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
 </body>
 </html>
