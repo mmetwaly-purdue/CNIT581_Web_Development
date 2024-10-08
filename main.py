@@ -1,6 +1,7 @@
 import flask
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 import werkzeug
+from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import os, random, codecs, time, datetime, logging, json, re  # Standard Python library modules
@@ -18,14 +19,26 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# Define the upload folder
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)  # Create the folder if it doesn't exist
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Define allowed file extensions
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+# Function to check if the uploaded file has an allowed extension
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Define the User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)  # Hashed password
+    password = db.Column(db.String(200), nullable=False)  # Plain text password for simplicity
     email = db.Column(db.String(120), unique=True, nullable=False)
-
 
 # Define the Agent class to represent an agent
 class Agent:
@@ -41,7 +54,6 @@ class Agent:
         self.created_by = "Admin"
         self.date_created = str(datetime.datetime.now())
 
-
 # Sample list to hold agents
 agent_list = [
     Agent("Default Agent 1", "Type 1", "Description of default agent 1", "Term 1, Term 2", "Structure 1"),
@@ -49,53 +61,43 @@ agent_list = [
     Agent("Default Agent 3", "Type 3", "Description of default agent 3", "Term 5, Term 6", "Structure 3")
 ]
 
-
 # Create the database inside the application context
 with app.app_context():
     db.create_all()
-
 
 @app.route('/')
 @app.route('/homepage')
 def home_page():
     return render_template("homepage.html")
 
-
 @app.route('/about_us_page')
 def about_us_page():
     return render_template("about_us_page.html")
-
 
 @app.route('/workflow')
 def workflow_page():
     return render_template("user_workflow_page.html")
 
-
 @app.route('/privacy')
 def privacy_page():
     return render_template("privacy.html")
-
 
 @app.route('/terms')
 def terms_page():
     return render_template("terms.html")
 
-
 @app.route('/create_agent')
 def create_page():
     return render_template("create.html")
-
 
 @app.route('/agents')
 def agents_page():
     return render_template("agents_page.html", agents=agent_list)
 
-
 @app.route('/agent_detail/<int:agent_id>')
 def agent_detail(agent_id):
     agent = agent_list[agent_id]
     return render_template("agents_detailed_page.html", agent=agent)
-
 
 # Route to handle agent creation from the form
 @app.route('/create_agent', methods=['POST'])
@@ -120,6 +122,36 @@ def create_agent():
 
     return jsonify({"message": "Agent created successfully"}), 201
 
+# Route to handle deleting an agent
+@app.route('/delete_agent/<int:agent_id>', methods=['DELETE'])
+def delete_agent(agent_id):
+    try:
+        agent_list.pop(agent_id)
+        return jsonify({"message": "Agent deleted successfully"}), 200
+    except IndexError:
+        return jsonify({"message": "Agent not found"}), 404
+
+# Route to handle file upload
+@app.route('/upload_document', methods=['POST'])
+def upload_document():
+    # Check if the post request has the file part
+    if 'file' not in request.files:
+        return 'No file part', 400
+
+    file = request.files['file']
+    
+    # If the user does not select a file, the browser submits an empty part without filename
+    if file.filename == '':
+        return 'No selected file', 400
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        print(f"Document received: {filename}")
+        return redirect(request.referrer or url_for('agents_page'))  # Redirect back to the agent's detail page after upload
+    else:
+        return 'File not allowed', 400
 
 # Route to register a new user
 @app.route('/register', methods=['POST'])
@@ -145,7 +177,6 @@ def register():
         print(f"Error during registration: {str(e)}")
         return jsonify({"message": "Username or email already exists"}), 400
 
-
 # Route to handle user sign-in
 @app.route('/signin', methods=['POST'])
 def signin():
@@ -158,7 +189,6 @@ def signin():
         return jsonify({"message": "Signed in successfully", "username": username}), 200
     else:
         return jsonify({"message": "Invalid credentials"}), 401
-
 
 if __name__ == '__main__':
     app.run(debug=True)
