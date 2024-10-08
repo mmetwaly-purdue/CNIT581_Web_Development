@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="text/css" rel="stylesheet" href="../static/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Agent Details - Multi-Agent Sensemaking</title>
 </head>
 
@@ -38,8 +39,7 @@
             <button id="registerBtn">Register</button>
         </div>
     </nav>
-</header>
-
+    </header>
 
     <main>
         <section class="agent-details">
@@ -54,23 +54,23 @@
                 <div class="agent-details-content">
                     <div class="agent-detail-row">
                         <label for="agent-name">Name:</label>
-                        <input type="text" id="agent-name" value='"Crime Scene" Agent' readonly>
+                        <input type="text" id="agent-name" value="{{ agent.name }}" readonly>
                     </div>
                     <div class="agent-detail-row">
                         <label for="created-by">Created by:</label>
-                        <input type="text" id="created-by" value="usernameXX" readonly>
+                        <input type="text" id="created-by" value="{{ agent.created_by }}" readonly>
                     </div>
                     <div class="agent-detail-row">
                         <label for="date-created">Date Created:</label>
-                        <input type="text" id="date-created" value="2024-09-06T13:52:10Z" readonly>
+                        <input type="text" id="date-created" value="{{ agent.date_created }}" readonly>
                     </div>
                     <div class="agent-description">
                         <h4>Description</h4>
-                        <textarea readonly>Text Describing the Agent.</textarea>
+                        <textarea readonly>{{ agent.description }}</textarea>
                     </div>
                     <div class="output-structure">
                         <h4>Output Structure</h4>
-                        <textarea readonly>Example Output structure</textarea>
+                        <textarea readonly>{{ agent.output_structure }}</textarea>
                     </div>
                     <div class="agent-actions">
                         <button class="upload-documents-button">Upload Documents</button>
@@ -92,6 +92,6 @@
         </nav>
     </footer>
 
-    <script href="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>

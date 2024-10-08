@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    let deleteMode = false; // Flag to track if the delete mode is active
+
     // Check if the user is already signed in
     var storedUsername = localStorage.getItem('username');
     let agentCounter = 10;  // Counter to keep track of new agents
@@ -17,14 +19,7 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '#signInBtn', function () {
-        console.log("Sign In button clicked"); // Debug log
         $('#signInModal').css('display', 'flex');
-    });
-
-    // Delegated event listener for Register button
-    $(document).on('click', '#registerBtn', function () {
-        console.log("Register button clicked"); // Debug log
-        $('#registerModal').css('display', 'flex');
     });
 
     // Close Sign In Modal
@@ -37,16 +32,37 @@ $(document).ready(function () {
         $('#registerModal').css('display', 'none');
     });
 
-    // Open Delete Agent Modal
-    $('.workflow-action-button').eq(3).on('click', function () {
-        $('#deleteAgentModal').css('display', 'flex');
+    // Toggle Delete Agent Mode
+    $('#delete-agent-mode').on('click', function () {
+        deleteMode = !deleteMode;
+        if (deleteMode) {
+            alert("Click on an agent to delete.");
+        }
     });
 
-    // Close Delete Agent Modal
-    $('#closeDeleteAgentModal').on('click', function () {
-        $('#deleteAgentModal').css('display', 'none');
+    // Function to delete an agent when in delete mode
+    $(document).on('click', '.agent-button', function () {
+        if (deleteMode) {
+            const agentIndex = $(this).attr('data-index');
+            
+            // Send a DELETE request to the server to remove the agent
+            $.ajax({
+                url: `/delete_agent/${agentIndex}`,
+                method: 'DELETE',
+                success: function (response) {
+                    alert("Agent deleted successfully!");
+                    location.reload(); // Reload the page to reflect the changes
+                },
+                error: function (error) {
+                    alert("Failed to delete the agent. Please try again.");
+                }
+            });
+
+            // Disable delete mode after deletion
+            deleteMode = false;
+        }
     });
-    
+
     // Agent data containing descriptions
     const agentDescriptions = {
         "Agent 1": "Description of agent 'Agent 1 is trained to find significant characters/names in mystery'. Provides name, age, occupation (if possible), demographics.",
@@ -65,16 +81,6 @@ $(document).ready(function () {
             }
         });
     }
-    
-    // Close modals if user clicks outside the modal content
-    $(window).on('click', function (event) {
-        if (event.target === document.getElementById('signInModal')) {
-            $('#signInModal').css('display', 'none');
-        }
-        if (event.target === document.getElementById('registerModal')) {
-            $('#registerModal').css('display', 'none');
-        }
-    });
 
     // Handle Register Form Submission
     $('#registerForm').on('submit', function (event) {
@@ -94,7 +100,7 @@ $(document).ready(function () {
                     $('#registerModal').css('display', 'none');
                     $('.auth-buttons').html(`<p>Hello, ${username}!</p>`);
                     localStorage.setItem('username', username);  // Store username for session persistence
-                    $('#userLogo').show(); // Show user logo after registration (ADD THIS LINE)
+                    $('#userLogo').show();
                 } else {
                     alert(response.message);
                 }
@@ -123,7 +129,7 @@ $(document).ready(function () {
                     $('#signInModal').css('display', 'none');
                     $('.auth-buttons').html(`<p>Hello, ${username}!</p>`);
                     localStorage.setItem('username', username);  // Store username for session persistence
-                    $('#userLogo').show(); // Show user logo after sign-in (ADD THIS LINE)
+                    $('#userLogo').show();
                 } else {
                     alert("Invalid username or password");
                 }
@@ -134,6 +140,84 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Function to create a new agent
+    $('#createAgentButton').on('click', function () {
+        // Collect form data
+        const agentName = $('#agent-name').val().trim();
+        const agentType = $('#agent-type').val().trim();
+        const agentDescription = $('#agent-description').val().trim();
+        const searchKeyTerms = $('#search-key-terms').val().trim();
+        const outputStructure = $('#output-structure').val().trim();
+        const addToGroup = $('input[name="add-to-group"]:checked').val() === 'yes';
+        const groupName = addToGroup ? $('#group-name').val().trim() : '';
+        const printLine = $('input[name="print-line"]:checked').val() === 'yes';
+        const autoConnect = $('input[name="auto-connect"]:checked').val() === 'yes';
+
+        // Check if agent name is provided
+        if (agentName === '') {
+            alert('Please enter a name for the agent.');
+            return;
+        }
+
+        // Create an object to store the agent data
+        const newAgent = {
+            name: agentName,
+            type: agentType,
+            description: agentDescription,
+            key_terms: searchKeyTerms,
+            output_structure: outputStructure,
+            group: addToGroup ? groupName : null,
+            print_line: printLine,
+            auto_connect: autoConnect
+        };
+
+        // Send the data to the server via POST request
+        $.ajax({
+            url: '/create_agent',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(newAgent),
+            success: function (response) {
+                alert('Agent created successfully!');
+                
+                // Refresh the page or redirect to the agents page to see the new agent
+                window.location.href = "/agents";
+            },
+            error: function (error) {
+                alert('Failed to create the agent. Please try again.');
+            }
+        });
+    });
+
+    // Function to dynamically load agents on the Agents page
+    function loadAgents() {
+        // Retrieve existing agents from localStorage
+        const agents = JSON.parse(localStorage.getItem('agents')) || [];
+
+        // Loop through agents and create buttons for each
+        agents.forEach((agent, index) => {
+            addAgentButton(agent, index);
+        });
+    }
+
+    // Function to create and append an agent button
+    function addAgentButton(agent, index) {
+        const agentButton = $('<a></a>')
+            .attr('href', `/agent_detail/${index}`)
+            .append($('<button></button>')
+                .addClass('agent-button')
+                .text(agent.name)
+                .attr('data-index', index)); // Add data-index for reference
+
+        // Append to agents container
+        $('.agents-container').append(agentButton);
+    }
+
+    // Load agents if we are on the agents page
+    if ($('.agents-container').length) {
+        loadAgents();
+    }
 
     // Function to delete the last agent box
     $('.workflow-action-button').eq(4).on('click', function () {
@@ -241,128 +325,4 @@ $(document).ready(function () {
             $('#logoutPopup').hide();
         }
     });
-
-    // Confirm Delete Agent
-    $('#confirmDeleteAgent').on('click', function () {
-        const agentNameOrId = $('#agentToDelete').val().trim();
-
-        if (agentNameOrId) {
-            // Find and delete the agent with the specified name or ID
-            const agentBox = $(`.workflow-agent-box:contains(${agentNameOrId})`).first();
-            if (agentBox.length) {
-                agentBox.remove();
-                alert(`Agent "${agentNameOrId}" has been deleted.`);
-            } else {
-                alert("Agent not found.");
-            }
-            $('#agentToDelete').val(''); // Clear input field
-        } else {
-            alert("Please enter the name or ID of the agent to delete.");
-        }
-
-        $('#deleteAgentModal').css('display', 'none'); // Close the modal
-    });
-
-    // Close modals if user clicks outside the modal content
-    $(window).on('click', function (event) {
-        if ($(event.target).is('#deleteAgentModal')) {
-            $('#deleteAgentModal').css('display', 'none');
-        }
-    });
-
-    // Enable/Disable Group Name Input
-    $('input[name="add-to-group"]').on('change', function () {
-        if ($(this).val() === 'yes') {
-            $('#group-name').prop('disabled', false);
-        } else {
-            $('#group-name').prop('disabled', true);
-        }
-    });
-
-    // Function to create a new agent
-    $('#createAgentButton').on('click', function () {
-        // Collect form data
-        const agentName = $('#agent-name').val().trim();
-        const agentType = $('#agent-type').val().trim();
-        const agentDescription = $('#agent-description').val().trim();
-        const searchKeyTerms = $('#search-key-terms').val().trim();
-        const outputStructure = $('#output-structure').val().trim();
-        const addToGroup = $('input[name="add-to-group"]:checked').val() === 'yes';
-        const groupName = addToGroup ? $('#group-name').val().trim() : '';
-        const printLine = $('input[name="print-line"]:checked').val() === 'yes';
-        const autoConnect = $('input[name="auto-connect"]:checked').val() === 'yes';
-
-        // Check if agent name is provided
-        if (agentName === '') {
-            alert('Please enter a name for the agent.');
-            return;
-        }
-
-        // Create an object to store the agent data
-        const newAgent = {
-            name: agentName,
-            type: agentType,
-            description: agentDescription,
-            keyTerms: searchKeyTerms,
-            output: outputStructure,
-            group: addToGroup ? groupName : null,
-            printLine: printLine,
-            autoConnect: autoConnect
-        };
-
-        // Retrieve existing agents from localStorage
-        let agents = JSON.parse(localStorage.getItem('agents')) || [];
-
-        // Add the new agent to the agents array
-        agents.push(newAgent);
-
-        // Store the updated agents array in localStorage
-        localStorage.setItem('agents', JSON.stringify(agents));
-
-        // Provide user feedback with a popup
-        alert('Agent created successfully!');
-
-        // Clear the form fields after creation
-        $('#agent-name').val('');
-        $('#agent-type').val('');
-        $('#agent-description').val('');
-        $('#search-key-terms').val('');
-        $('#output-structure').val('');
-        $('input[name="add-to-group"]').prop('checked', false);
-        $('#group-name').val('').prop('disabled', true);
-        $('input[name="print-line"]').prop('checked', false);
-        $('input[name="auto-connect"]').prop('checked', false);
-
-        // Optionally, add the new agent directly to the agents page if open
-        if ($('.agents-container').length) {
-            addAgentButton(newAgent, agents.length - 1);
-        }
-    });
-
-    // Function to dynamically load agents on the Agents page
-    function loadAgents() {
-        // Retrieve existing agents from localStorage
-        const agents = JSON.parse(localStorage.getItem('agents')) || [];
-
-        // Loop through agents and create buttons for each
-        agents.forEach((agent, index) => {
-            addAgentButton(agent, index);
-        });
-    }
-
-    // Function to create and append an agent button
-    function addAgentButton(agent, index) {
-        const agentButton = $('<button></button>')
-            .addClass('agent-button')
-            .text(agent.name)
-            .attr('data-index', index); // Optional: add data-index for reference
-
-        // Append to agents container
-        $('.agents-container').append(agentButton);
-    }
-
-    // Load agents if we are on the agents page
-    if ($('.agents-container').length) {
-        loadAgents();
-    }
 });

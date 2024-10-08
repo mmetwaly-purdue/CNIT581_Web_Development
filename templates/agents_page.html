@@ -44,20 +44,28 @@
     <main>
         <div class="main-content">
             <h1>Sensemaking Multi-Agents</h1>
-            <p>Text describing our agents.</p>
+            <p>Explore agents that help make sense of complex data through collaboration and analysis.</p>
 
             <div class="controls">
                 <button id="sort-button">Sort: A-Z</button>
                 <button id="filter-button">Filter: Accuracy - 100%</button>
                 <button id="create-group-button">Create Group</button>
+                <button id="delete-agent-mode" class="delete-agent-mode-button">Delete Agent</button>
             </div>
 
             <!-- Container for dynamically generated agent buttons -->
             <div class="agents-container">
-                <button class="agent-button">Default Agent 1</button>
-                <button class="agent-button">Default Agent 2</button>
-                <button class="agent-button">Default Agent 3</button>
-                <!-- New agent buttons will be appended here -->
+                <!-- Default agents -->
+                <a href="/agent_detail/0">
+                    <button class="agent-button">Default Agent 1</button>
+                </a>
+                <a href="/agent_detail/1">
+                    <button class="agent-button">Default Agent 2</button>
+                </a>
+                <a href="/agent_detail/2">
+                    <button class="agent-button">Default Agent 3</button>
+                </a>
+                <!-- New agent buttons will be appended here dynamically -->
             </div>
         </div>
     </main>
