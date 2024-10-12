@@ -74,10 +74,22 @@
                     </div>
 
                     <!-- File Upload Form -->
+                    <!-- agents_detailed_page.html -->
                     <form id="upload-form" action="/upload_document" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="agent_name" id="agent_name_input"> <!-- Dynamic agent name -->
                         <input type="file" id="file" name="file" required>
                         <button type="submit" class="upload-documents-button">Upload Document</button>
                     </form>
+                    
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            // Get the agent name from the page (from the agent-name input)
+                            const agentName = document.getElementById("agent-name").value;
+                            
+                            // Set the hidden input's value with the agent name
+                            document.getElementById("agent_name_input").value = agentName;
+                        });
+                    </script>
 
                 </div>
             </div>

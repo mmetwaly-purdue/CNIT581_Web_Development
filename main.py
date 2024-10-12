@@ -1,5 +1,5 @@
 import flask
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 import werkzeug
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
@@ -18,7 +18,7 @@ app.jinja_env.filters['zip'] = zip
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
+app.secret_key = 'mamamia'  # Replace with a unique secret key
 # Define the upload folder
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -56,11 +56,19 @@ class Agent:
 
 # Sample list to hold agents
 agent_list = [
-    Agent("Default Agent 1", "Type 1", "Description of default agent 1", "Term 1, Term 2", "Structure 1"),
-    Agent("Default Agent 2", "Type 2", "Description of default agent 2", "Term 3, Term 4", "Structure 2"),
-    Agent("Default Agent 3", "Type 3", "Description of default agent 3", "Term 5, Term 6", "Structure 3")
+    Agent("Alias Name Agent", "Type 1", "Description of default agent 1", "Term 1, Term 2", "Structure 1"),
+    Agent("Address Agent", "Type 2", "Description of default agent 2", "Term 3, Term 4", "Structure 2"),
+    Agent("Dates Agent", "Type 3", "Description of default agent 3", "Term 5, Term 6", "Structure 3")
 ]
 
+# Define the Document model to store uploaded documents
+class Document(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    agent_name = db.Column(db.String(80), nullable=False)
+    doc_name = db.Column(db.String(120), nullable=False)
+    doc_content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
 # Create the database inside the application context
 with app.app_context():
     db.create_all()
@@ -76,7 +84,13 @@ def about_us_page():
 
 @app.route('/workflow')
 def workflow_page():
-    return render_template("user_workflow_page.html")
+    user_id = session.get('user_id')  # Check for the logged-in user's ID
+    if user_id:
+        documents = Document.query.filter_by(user_id=user_id).all()  # Retrieve user's documents
+    else:
+        documents = []  # Empty list if not logged in
+
+    return render_template('user_workflow_page.html', documents=documents, logged_in=bool(user_id))
 
 @app.route('/privacy')
 def privacy_page():
@@ -131,27 +145,25 @@ def delete_agent(agent_id):
     except IndexError:
         return jsonify({"message": "Agent not found"}), 404
 
-# Route to handle file upload
 @app.route('/upload_document', methods=['POST'])
 def upload_document():
-    # Check if the post request has the file part
     if 'file' not in request.files:
-        return 'No file part', 400
+        return jsonify({"error": "No file uploaded"}), 400
 
     file = request.files['file']
-    
-    # If the user does not select a file, the browser submits an empty part without filename
-    if file.filename == '':
-        return 'No selected file', 400
+    agent_name = request.form.get('agent_name')  # Ensure agent name is provided
+    user_id = session.get('user_id')  # Retrieve logged-in user's ID
 
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        print(f"Document received: {filename}")
-        return redirect(request.referrer or url_for('agents_page'))  # Redirect back to the agent's detail page after upload
-    else:
-        return 'File not allowed', 400
+    if not user_id:
+        return redirect(url_for('signin_page'))  # Redirect to login if not signed in
+
+    # Read document content and save to the database
+    file_content = file.read().decode('utf-8')  # Assuming text files
+    document = Document(agent_name=agent_name, doc_name=file.filename, doc_content=file_content, user_id=user_id)
+    db.session.add(document)
+    db.session.commit()
+
+    return redirect(url_for('workflow_page'))
 
 # Route to register a new user
 @app.route('/register', methods=['POST'])
@@ -181,12 +193,11 @@ def register():
 @app.route('/signin', methods=['POST'])
 def signin():
     data = request.json
-    username = data.get('username')
-    password = data.get('password')
+    user = User.query.filter_by(username=data['username']).first()
 
-    user = User.query.filter_by(username=username).first()
-    if user and user.password == password:
-        return jsonify({"message": "Signed in successfully", "username": username}), 200
+    if user and user.password == data['password']:  # Assuming plaintext password (not recommended in production)
+        session['user_id'] = user.id  # Store user ID in session
+        return jsonify({"message": "Signed in successfully"}), 200
     else:
         return jsonify({"message": "Invalid credentials"}), 401
 

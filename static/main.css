@@ -287,6 +287,18 @@ button:hover {
     z-index: -1;
 }
 
+/* Highlighted text styling */
+.highlight {
+    font-weight: bold;
+    background-color: yellow;
+    padding: 2px;
+}
+
+/* Styling for connected highlights */
+.connected-highlight {
+    background-color: lightblue !important;
+}
+
 #deleteAgentModal {
     display: none; /* Hidden by default */
     position: fixed;
@@ -482,27 +494,36 @@ button:hover {
     background-color: #d3d3f6;
 }
 
-/* Agent Grid Section */
+/* Workflow Agent Grid */
 .workflow-agent-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 20px;
-    justify-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Adds 20px space between boxes */
+    padding: 20px; /* Optional padding around the flex container */
 }
 
 .workflow-agent-box {
     background-color: #b0b0b0;
     padding: 20px;
-    text-align: center;
+    text-align: left;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 150px;
-    height: 80px;
+    width: 300px; /* Full width within grid column */
+    height: auto;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
+    flex-direction: column;
+}
+
+.workflow-agent-box h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.workflow-agent-box .document-content {
+    font-size: 14px;
+    overflow-y: auto; /* Scrollable if content overflows */
+    max-height: 200px; /* Adjust this value as needed */
 }
 
 /* Right-side Section */

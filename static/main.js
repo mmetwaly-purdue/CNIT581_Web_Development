@@ -1,94 +1,61 @@
 $(document).ready(function () {
-    let deleteMode = false; // Flag to track if the delete mode is active
+    // Check if user is signed in and set up user interface
+    const storedUsername = localStorage.getItem('username');
+    const connections = []; // Store all connections
+    const highlights = {}; // Store user highlights
+    const agentColors = {}; // Store a consistent color per agent
 
-    // Check if the user is already signed in
-    var storedUsername = localStorage.getItem('username');
-    let agentCounter = 10;  // Counter to keep track of new agents
-    const connections = []; // Array to store connections
 
+    //---------------------------------------------------------------------------------------//
     if (storedUsername) {
         $('.auth-buttons').html(`<p>Hello, ${storedUsername}!</p>`);
-        $('#userLogo').show(); // Make sure the user icon is visible
+        $('#userLogo').show();
+        $('.workflow-agent-grid').show();
     } else {
-        $('#userLogo').hide(); // Hide the user icon if not logged in
+        $('#userLogo').hide();
+        $('.workflow-agent-grid').hide();
     }
 
-    // Show the Logout Popup when clicking the user logo
+    // Show Logout Popup on User Icon Click
     $('#userLogo').on('click', function () {
-        $('#logoutPopup').toggle(); // Toggle visibility
+        $('#logoutPopup').toggle();
     });
 
-    $(document).on('click', '#signInBtn', function () {
+    // Sign-In & Register Modal Logic
+    $('#signInBtn').on('click', function () {
         $('#signInModal').css('display', 'flex');
     });
 
-    // Close Sign In Modal
-    $(document).on('click', '#closeSignIn', function () {
+    $('#registerBtn').on('click', function () {
+        $('#registerModal').css('display', 'flex');
+    });
+
+    $('#closeSignIn').on('click', function () {
         $('#signInModal').css('display', 'none');
     });
 
-    // Close Register Modal
-    $(document).on('click', '#closeRegister', function () {
+    $('#closeRegister').on('click', function () {
         $('#registerModal').css('display', 'none');
     });
 
-    // Toggle Delete Agent Mode
-    $('#delete-agent-mode').on('click', function () {
-        deleteMode = !deleteMode;
-        if (deleteMode) {
-            alert("Click on an agent to delete.");
+    //---------------------------------------------------------------------------------------//
+    $(window).on('click', function (event) {
+        if (event.target === document.getElementById('signInModal')) {
+            $('#signInModal').css('display', 'none');
+        }
+        if (event.target === document.getElementById('registerModal')) {
+            $('#registerModal').css('display', 'none');
         }
     });
 
-    // Function to delete an agent when in delete mode
-    $(document).on('click', '.agent-button', function () {
-        if (deleteMode) {
-            const agentIndex = $(this).attr('data-index');
-            
-            // Send a DELETE request to the server to remove the agent
-            $.ajax({
-                url: `/delete_agent/${agentIndex}`,
-                method: 'DELETE',
-                success: function (response) {
-                    alert("Agent deleted successfully!");
-                    location.reload(); // Reload the page to reflect the changes
-                },
-                error: function (error) {
-                    alert("Failed to delete the agent. Please try again.");
-                }
-            });
-
-            // Disable delete mode after deletion
-            deleteMode = false;
-        }
-    });
-
-    // Agent data containing descriptions
-    const agentDescriptions = {
-        "Agent 1": "Description of agent 'Agent 1 is trained to find significant characters/names in mystery'. Provides name, age, occupation (if possible), demographics.",
-        "Agent 2": "Description of agent 'Agent 2 performs keyword extraction in scientific articles'.",
-        "Agent 3": "Description of agent 'Agent 3 analyzes sentiment in social media posts'.",
-        // Add descriptions for the rest of the agents
-    };
-
-    // Add tooltips to agent buttons if they exist
-    if ($(".agent-button").length > 0) {
-        $(".agent-button").each(function () {
-            const agentName = $(this).text().trim();
-            if (agentDescriptions[agentName]) {
-                const tooltip = $("<div class='tooltip'></div>").text(agentDescriptions[agentName]);
-                $(this).append(tooltip);
-            }
-        });
-    }
-
+    //---------------------------------------------------------------------------------------//
     // Handle Register Form Submission
     $('#registerForm').on('submit', function (event) {
         event.preventDefault();
         const username = $('#registerUsername').val();
         const password = $('#registerPassword').val();
         const email = $('#registerEmail').val();
-    
+
         $.ajax({
             url: '/register',
             method: 'POST',
@@ -98,9 +65,10 @@ $(document).ready(function () {
                 if (response.message === "User registered successfully") {
                     alert("Registration successful!");
                     $('#registerModal').css('display', 'none');
+                    localStorage.setItem('username', username);
                     $('.auth-buttons').html(`<p>Hello, ${username}!</p>`);
-                    localStorage.setItem('username', username);  // Store username for session persistence
                     $('#userLogo').show();
+                    $('.workflow-agent-grid').show();
                 } else {
                     alert(response.message);
                 }
@@ -112,7 +80,7 @@ $(document).ready(function () {
         });
     });
 
-    // Handle Sign In Form Submission
+    // Handle Sign-In Form Submission
     $('#signInForm').on('submit', function (event) {
         event.preventDefault();
         const username = $('#signInUsername').val();
@@ -127,9 +95,10 @@ $(document).ready(function () {
                 if (response.message === "Signed in successfully") {
                     alert("Sign in successful!");
                     $('#signInModal').css('display', 'none');
+                    localStorage.setItem('username', username);
                     $('.auth-buttons').html(`<p>Hello, ${username}!</p>`);
-                    localStorage.setItem('username', username);  // Store username for session persistence
                     $('#userLogo').show();
+                    $('.workflow-agent-grid').show();
                 } else {
                     alert("Invalid username or password");
                 }
@@ -140,6 +109,161 @@ $(document).ready(function () {
             }
         });
     });
+
+    //---------------------------------------------------------------------------------------//
+    // ** Add Connection with Highlighting **
+    $('.workflow-action-button').eq(0).on('click', function () {
+        const connectionInput = $('#workflow-textarea').val();
+        const [agent1Text, agent2Text] = connectionInput.split(" AND ").map(str => str.trim());
+        const agentBox1 = $(`.workflow-agent-box:contains("${agent1Text}")`).first();
+        const agentBox2 = $(`.workflow-agent-box:contains("${agent2Text}")`).first();
+
+        if (agentBox1.length && agentBox2.length) {
+            const line = $('<div class="connection-line"></div>').css({ background: 'black', height: '2px' });
+            $('body').append(line);
+            drawLine(line, agentBox1, agentBox2);
+
+            // Highlight the texts in each box with the same color
+            const highlightColor = 'lightblue';
+            highlightText(agentBox1, agent1Text, highlightColor);
+            highlightText(agentBox2, agent2Text, highlightColor);
+
+            connections.push({ line, agent1Text, agent2Text, highlightColor });
+        } else {
+            alert("Enter valid agent texts in format: Agent1 Text1 AND Agent2 Text2.");
+        }
+    });
+
+    // ** Draw Line Between Boxes **
+    function drawLine(line, box1, box2) {
+        const pos1 = box1.offset();
+        const pos2 = box2.offset();
+        const x1 = pos1.left + box1.outerWidth() / 2;
+        const y1 = pos1.top + box1.outerHeight() / 2;
+        const x2 = pos2.left + box2.outerWidth() / 2;
+        const y2 = pos2.top + box2.outerHeight() / 2;
+
+        const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+
+        line.css({
+            left: `${x1}px`,
+            top: `${y1}px`,
+            width: `${length}px`,
+            transform: `rotate(${angle}deg)`,
+            transformOrigin: '0 0'
+        });
+    }
+
+    // ** Hide All Connections **
+    $('.workflow-action-button').eq(4).on('click', function () {
+        connections.forEach(connection => {
+            connection.line.toggle(); // Toggle visibility
+        });
+    });
+
+    // ** Highlight All Connections in Red **
+    $('.workflow-action-button').eq(2).on('click', function () {
+        connections.forEach(connection => {
+            connection.line.css('background', 'red');
+        });
+    });
+    
+    //---------------------------------------------------------------------------------------//
+    // ** Open Delete Agent Modal when button is clicked **
+    $('.workflow-action-button').eq(3).on('click', function () {
+        $('#deleteAgentModal').show(); // Display the modal to confirm deletion
+    });
+
+    // ** Confirm Delete Agent by Name **
+    $('#confirmDeleteAgent').on('click', function () {
+        const agentToDelete = $('#agentToDelete').val().trim();
+        const agentBox = $(`.workflow-agent-box:contains("${agentToDelete}")`).filter(function() {
+            return $(this).text().includes(agentToDelete);
+        }).first();
+
+        if (agentBox.length) {
+            agentBox.remove();
+            $('#deleteAgentModal').hide();
+            $('#agentToDelete').val(''); // Clear input after deletion
+        } else {
+            alert("Agent not found. Please enter the correct agent name.");
+        }
+    });
+
+    // Close Delete Agent Modal
+    $('#closeDeleteAgentModal').on('click', function () {
+        $('#deleteAgentModal').hide();
+        $('#agentToDelete').val(''); // Clear input when closed
+    });
+
+    //---------------------------------------------------------------------------------------//
+    // Function to generate a random color
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function applyHighlight(agentBox, start, end, color) {
+        const documentContent = $(agentBox).find('.document-content')[0];
+        const selection = window.getSelection();
+    
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const span = document.createElement('span');
+    
+            // Apply the highlight style
+            span.style.backgroundColor = color;
+            span.classList.add('highlight');
+    
+            // Wrap the selected text in the span
+            range.surroundContents(span);
+    
+            // Clear the selection after applying the highlight
+            selection.removeAllRanges();
+        }
+        console.log(`Highlight applied with color ${color}`);
+    }
+    
+    // Event listener for text selection within any agent box
+    $('.workflow-agent-box .document-content').on('mouseup', function () {
+        const agentBox = $(this).closest('.workflow-agent-box');
+        const agentName = agentBox.find('h4').text();
+        const selection = window.getSelection();
+    
+        if (!selection.isCollapsed) {
+            const range = selection.getRangeAt(0);
+            const start = range.startOffset;
+            const end = range.endOffset;
+    
+            // Use consistent color for each agent, generating one if agent does not already have a color
+            if (!agentColors[agentName]) {
+                agentColors[agentName] = getRandomColor();
+            }
+            const color = agentColors[agentName];
+    
+            applyHighlight(agentBox, start, end, color);
+    
+            // Save the highlight (session only for now)
+            saveHighlight(agentName, start, end, color);
+        }
+    })
+
+    // Function to save highlights for the session
+    function saveHighlight(agentName, start, end, color) {
+        if (!highlights[agentName]) {
+            highlights[agentName] = [];
+        }
+
+        highlights[agentName].push({ start, end, color });
+        console.log(`Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}`);
+    }
+
+    //---------------------------------------------------------------------------------------//
 
     // Function to create a new agent
     $('#createAgentButton').on('click', function () {
@@ -190,6 +314,7 @@ $(document).ready(function () {
         });
     });
 
+
     // Function to dynamically load agents on the Agents page
     function loadAgents() {
         // Retrieve existing agents from localStorage
@@ -219,110 +344,26 @@ $(document).ready(function () {
         loadAgents();
     }
 
-    // Function to delete the last agent box
-    $('.workflow-action-button').eq(4).on('click', function () {
-        $('.workflow-agent-grid .workflow-agent-box').last().remove();
-    });
+    //---------------------------------------------------------------------------------------//
 
-    // Function to add a connection
-    $('.workflow-action-button').eq(1).on('click', function () {
-        const connectionInput = $('#workflow-textarea').val();
-        const [agent1, agent2] = connectionInput.split(" AND ").map(a => a.trim());
-
-        const agentBox1 = $(`.workflow-agent-box:contains(${agent1})`).first();
-        const agentBox2 = $(`.workflow-agent-box:contains(${agent2})`).first();
-
-        if (agentBox1.length && agentBox2.length) {
-            const line = $('<div class="connection-line"></div>');
-            line.css({
-                position: 'absolute',
-                background: 'black',
-                height: '2px'
-            });
-            $('body').append(line);
-            drawLine(line, agentBox1, agentBox2);
-            connections.push({ line, agent1, agent2, hidden: false });
-        } else {
-            alert("Please enter valid agent names separated by 'AND'.");
-        }
-    });
-
-    // Function to highlight the last connection
-    $('.workflow-action-button').eq(3).on('click', function () {
-        if (connections.length) {
-            const lastConnection = connections[connections.length - 1];
-            lastConnection.line.css('background', 'red');
-        }
-    });
-
-    // Function to delete the last connection
-    $('.workflow-action-button').eq(2).on('click', function () {
-        if (connections.length) {
-            const lastConnection = connections.pop();
-            lastConnection.line.remove();
-        }
-    });
-
-    // Function to hide/show connections
-    $('.workflow-action-button').eq(5).on('click', function () {
-        connections.forEach(connection => {
-            if (!connection.hidden) {
-                connection.line.hide();
-                connection.hidden = true;
-            } else {
-                connection.line.show();
-                connection.hidden = false;
-            }
-        });
-    });
-
-    // Utility function to draw a line between two boxes
-    function drawLine(line, box1, box2) {
-        const pos1 = box1.offset();
-        const pos2 = box2.offset();
-        const x1 = pos1.left + box1.outerWidth() / 2;
-        const y1 = pos1.top + box1.outerHeight() / 2;
-        const x2 = pos2.left + box2.outerWidth() / 2;
-        const y2 = pos2.top + box2.outerHeight() / 2;
-
-        const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-        const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
-
-        line.css({
-            left: `${x1}px`,
-            top: `${y1}px`,
-            width: `${length}px`,
-            transform: `rotate(${angle}deg)`,
-            transformOrigin: '0 0'  // Sets the rotation origin at the start of the line
+    // Function to load document content into an agent box
+    function loadDocumentContent(agentId, filePath) {
+        $.get(filePath, function (data) {
+            $(`#${agentId} .document-content`).text(data);
         });
     }
 
-    // Reposition lines on window resize
-    $(window).resize(function () {
-        connections.forEach(connection => {
-            const agentBox1 = $(`.workflow-agent-box:contains(${connection.agent1})`).first();
-            const agentBox2 = $(`.workflow-agent-box:contains(${connection.agent2})`).first();
-            if (agentBox1.length && agentBox2.length) {
-                drawLine(connection.line, agentBox1, agentBox2);
-            }
-        });
-    });
+    //---------------------------------------------------------------------------------------//
 
-    // Handle Logout Confirmation
+    // Logout clears localStorage and hides workflow content
     $('#confirmLogout').on('click', function () {
-        localStorage.removeItem('username'); // Clear username from localStorage
+        localStorage.removeItem('username');
         $('.auth-buttons').html(`
             <button id="signInBtn">Sign In</button>
             <button id="registerBtn">Register</button>
-        `); // Reset to Sign In and Register buttons
-        $('#logoutPopup').hide(); // Hide the popup
-        $('#userLogo').hide(); // Hide the user icon after logging out
-    });
-
-    // Hide the popup if clicked outside
-    $(document).on('click', function (e) {
-        if (!$(e.target).closest('#userLogo').length && !$(e.target).closest('#logoutPopup').length) {
-            $('#logoutPopup').hide();
-        }
+        `);
+        $('#logoutPopup').hide();
+        $('#userLogo').hide();
+        $('.workflow-agent-grid').hide();
     });
 });
