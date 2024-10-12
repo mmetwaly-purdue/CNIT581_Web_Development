@@ -111,7 +111,14 @@ $(document).ready(function () {
     });
 
     //---------------------------------------------------------------------------------------//
-    // ** Add Connection with Highlighting **
+   // Apply highlight to agent names in the header
+    function highlightAgentName(agentBox, color) {
+        const header = $(agentBox).find('h4');
+        const agentName = header.text();
+        header.html(`<span style="background-color:${color};">${agentName}</span>`);
+    }
+
+    // Add Connection with consistent color for connected agents
     $('.workflow-action-button').eq(0).on('click', function () {
         const connectionInput = $('#workflow-textarea').val();
         const [agent1Text, agent2Text] = connectionInput.split(" AND ").map(str => str.trim());
@@ -119,22 +126,30 @@ $(document).ready(function () {
         const agentBox2 = $(`.workflow-agent-box:contains("${agent2Text}")`).first();
 
         if (agentBox1.length && agentBox2.length) {
-            const line = $('<div class="connection-line"></div>').css({ background: 'black', height: '2px' });
+            // Assign or reuse a color for this connection
+            const connectionColor = agentColors[agent1Text] || getRandomColor();
+            agentColors[agent1Text] = connectionColor;
+            agentColors[agent2Text] = connectionColor;
+
+            // Highlight both agent names in headers with the same color
+            highlightAgentName(agentBox1, connectionColor);
+            highlightAgentName(agentBox2, connectionColor);
+
+            // Draw line between connected agents
+            const line = $('<div class="connection-line"></div>').css({
+                background: connectionColor,
+                height: '2px'
+            });
             $('body').append(line);
             drawLine(line, agentBox1, agentBox2);
 
-            // Highlight the texts in each box with the same color
-            const highlightColor = 'lightblue';
-            highlightText(agentBox1, agent1Text, highlightColor);
-            highlightText(agentBox2, agent2Text, highlightColor);
-
-            connections.push({ line, agent1Text, agent2Text, highlightColor });
+            connections.push({ line, agent1Text, agent2Text, color: connectionColor });
         } else {
-            alert("Enter valid agent texts in format: Agent1 Text1 AND Agent2 Text2.");
+            alert("Enter valid agent texts in format: Agent1 Text AND Agent2 Text.");
         }
-    });
+    })
 
-    // ** Draw Line Between Boxes **
+    // Draw a line between two agent boxes
     function drawLine(line, box1, box2) {
         const pos1 = box1.offset();
         const pos2 = box2.offset();
@@ -154,6 +169,7 @@ $(document).ready(function () {
             transformOrigin: '0 0'
         });
     }
+
 
     // ** Hide All Connections **
     $('.workflow-action-button').eq(4).on('click', function () {
@@ -183,13 +199,25 @@ $(document).ready(function () {
         }).first();
 
         if (agentBox.length) {
+            // Remove associated connections
+            connections.forEach((connection, index) => {
+                if (connection.agent1Text === agentToDelete || connection.agent2Text === agentToDelete) {
+                    connection.line.remove(); // Remove the line from the DOM
+                    connections.splice(index, 1); // Remove connection from the array
+                    console.log(`Connection removed for agent: ${agentToDelete}`);
+                }
+            });
+
+            // Remove the agent box itself
             agentBox.remove();
             $('#deleteAgentModal').hide();
             $('#agentToDelete').val(''); // Clear input after deletion
+
+            console.log(`Agent ${agentToDelete} and associated connections deleted.`);
         } else {
             alert("Agent not found. Please enter the correct agent name.");
         }
-    });
+    })
 
     // Close Delete Agent Modal
     $('#closeDeleteAgentModal').on('click', function () {
@@ -251,7 +279,7 @@ $(document).ready(function () {
             // Save the highlight (session only for now)
             saveHighlight(agentName, start, end, color);
         }
-    })
+    });
 
     // Function to save highlights for the session
     function saveHighlight(agentName, start, end, color) {
