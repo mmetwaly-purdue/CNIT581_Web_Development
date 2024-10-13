@@ -782,3 +782,150 @@ textarea {
 .create-agent-button button:hover {
     background-color: #bbb;
 }
+
+/* General centering of titles and text */
+.about-us-header h1,
+.mission-vision h2,
+.how-it-works h2,
+.why-sensemaking h2,
+.team h2 {
+    text-align: center;
+    font-size: 2.5rem; /* Larger titles */
+    margin-bottom: 20px;
+}
+
+.about-us-header p,
+.mission-vision p,
+.how-it-works p,
+.why-sensemaking p,
+.team p {
+    text-align: center;
+    font-size: 1.2rem; /* Slightly larger paragraph text */
+    margin: 0 auto 20px;
+    max-width: 800px; /* Limit width for readability */
+}
+
+/* Styling for the team section */
+.team-members {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.team-member {
+    display: flex;
+    align-items: center;
+    max-width: 800px;
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Circular image */
+    margin-right: 20px; /* Space between image and text */
+}
+
+.team-member h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.team-member p {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* Specific styling for How It Works and Why sections */
+.how-it-works,
+.why-sensemaking {
+    margin: 40px 0;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background for separation */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+
+/* Footer styling */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+footer ul {
+    list-style: none;
+    padding: 0;
+}
+
+footer ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+footer ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+/* Styling for modals (Sign In and Register) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    position: relative;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Close button for modals */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+/* General body adjustments */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
