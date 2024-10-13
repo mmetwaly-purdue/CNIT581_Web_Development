@@ -179,7 +179,7 @@ def upload_document():
     user_id = session.get('user_id')  # Retrieve logged-in user's ID
 
     if not user_id:
-        return redirect(url_for('signin_page'))  # Redirect to login if not signed in
+        return redirect(url_for('signin'))  # Redirect to login if not signed in
 
     # Read document content and save to the database
     file_content = file.read().decode('utf-8')  # Assuming text files

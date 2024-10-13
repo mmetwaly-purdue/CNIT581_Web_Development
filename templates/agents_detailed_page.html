@@ -42,6 +42,32 @@
 
 
     <main>
+        <!-- Sign In Modal -->
+        <div id="signInModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeSignIn">&times;</span>
+                <h2>Sign In</h2>
+                <form id="signInForm">
+                    <input type="text" id="signInUsername" placeholder="Username" required>
+                    <input type="password" id="signInPassword" placeholder="Password" required>
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeRegister">&times;</span>
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <input type="text" id="registerUsername" placeholder="Username" required>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
         <section class="agent-details">
             <div class="agent-header">
                 <h2>Want to publish your Agent for everyone to use? (send your agent to our development team)</h2>

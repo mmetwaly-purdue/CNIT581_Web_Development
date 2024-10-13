@@ -5,6 +5,8 @@ $(document).ready(function () {
     const highlights = {};  // Store user highlights
     const agentColors = {}; // Store a consistent color per agent
     let ascending = true; // Variable to track sort order
+    let summaryText = "";
+
 
     // Function to render agent buttons
     function renderAgentButtons() {
@@ -60,15 +62,17 @@ $(document).ready(function () {
         storeConnection('Add Connection', connectionInput);
     });
 
+        // Handle deleting a connection (similar to adding)
+    $('#deleteConnectionButton').on('click', function () {
+        const connectionInput = $('#workflow-textarea').val(); // Assuming it's from the same textarea
+        storeConnection('Delete Connection', connectionInput);
+    });
+
+
+
     // Delete agent logic (when "Delete Agent" mode is enabled)
     $('#delete-agent-mode').on('click', function () {
         deleteAgentMode(); // Call the function to delete agents
-    });
-
-    // Handle other button presses (for example, 'Delete Connection')
-    $('.workflow-action-button').eq(1).on('click', function () {
-        const connectionInput = $('#workflow-textarea').val();
-        storeConnection('Delete Connection', connectionInput);
     });
 
     // Store connection function
@@ -118,6 +122,16 @@ $(document).ready(function () {
 
     // New logic for displaying the summary of all connections
     $('#summaryButton').on('click', function () {
+        if (summaryText === "") {
+            console.log("No highlights available to display.");
+            $('#summary-textarea').val("No highlights available.");
+        } else {
+            // Paste the summaryText into the summary text area or output it as desired
+            $('#summary-textarea').val(summaryText);
+    
+            // Log the summaryText variable
+            console.log("Current summaryText: ", summaryText);
+        }
         console.log('Summary button clicked');
         // Fetch the summary from the backend
         $.ajax({
@@ -125,7 +139,8 @@ $(document).ready(function () {
             method: 'GET',
             success: function (response) {
                 // Display the summary in the new summary text area
-                $('#summary-textarea').val(response.summary);
+                let currentContent = $('#summary-textarea').val();
+                $('#summary-textarea').val(currentContent + response.summary);
                 console.log("Successfuly displayed summary")
             },
             error: function (error) {
@@ -412,16 +427,39 @@ $(document).ready(function () {
         }
     });
 
-    // Function to save highlights for the session
-    function saveHighlight(agentName, start, end, color) {
-        if (!highlights[agentName]) {
-            highlights[agentName] = [];
-        }
-
-        highlights[agentName].push({ start, end, color });
-        console.log(`Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}`);
+    // Function to save highlights for the session and update the summary
+function saveHighlight(agentName, start, end, color) {
+    if (!highlights[agentName]) {
+        highlights[agentName] = [];
     }
 
+    // Save the highlight into the highlights object
+    highlights[agentName].push({ start, end, color });
+
+    // Log to ensure the highlight is being saved
+    console.log(`Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}`);
+
+    // Automatically update the summaryText with the new highlight
+    summaryText += `Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}\n`;
+
+    // Log to ensure summaryText is being updated
+    console.log("Updated summary text: ", summaryText);
+}
+
+// Handle the Summary button click
+$('#summaryButton').on('click', function () {
+    // Log to ensure the button click works
+    console.log("Summary button clicked. Displaying summary...");
+
+    // Check if summaryText has been populated
+    if (summaryText === "") {
+        console.log("No highlights available to display.");
+        $('#summary-textarea').val("No highlights available.");
+    } else {
+        // Paste the summaryText into the summary text area or output it as desired
+        $('#summary-textarea').val(summaryText);
+    }
+});
     //---------------------------------------------------------------------------------------//
 
     // Function to create a new agent
