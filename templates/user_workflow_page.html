@@ -102,17 +102,23 @@
 
     
         <!-- Right-side section (Connections Form) -->
-<!-- Right-side section (Connections Form) -->
-    <div class="workflow-right-side-container">
-        <h3>Specify Connections to Explore</h3>
-        <textarea id="workflow-textarea" placeholder="Example: Agent 1 AND Agent 2" rows="4"></textarea>
-    </div>
+        <div class="workflow-right-side-container">
+            <h3>Specify Connections to Explore</h3>
+            <textarea id="workflow-textarea" placeholder="Example: Agent 1 AND Agent 2" rows="4"></textarea>
+        </div>
 
-    <!-- New summary text area -->
-    <div class="workflow-right-side-container">
-        <h3>Summary of Connections</h3>
-        <textarea id="summary-textarea" placeholder="Summary of all connections will appear here" rows="4" readonly></textarea>
-    </div>
+        <!-- New summary text area -->
+        <div class="workflow-right-side-container">
+            <h3>Summary of Connections and Highlights</h3>
+            <div class="filter-buttons">
+                <button id="filterConnections">Show Only Connections</button>
+                <button id="filterHighlights">Show Only Highlights</button>
+                <input type="text" id="filterAgentInput" placeholder="Enter Agent Name" />
+                <button id="filterAgent">Filter by Agent</button>
+            </div>
+            <textarea id="summary-textarea" placeholder="Summary of all connections and highlights will appear here" rows="8" readonly></textarea>
+        </div>
+
         <!-- Delete Agent Modal -->
         <div id="deleteAgentModal" class="modal">
             <div class="modal-content">

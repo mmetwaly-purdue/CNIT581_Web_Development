@@ -249,6 +249,53 @@ button:hover {
     font-size: 16px;
     color: #333;
 }
+
+/* Filter Buttons Container */
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+/* General Style for All Filter Buttons */
+.filter-buttons button {
+    padding: 8px 15px;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Specific Style for the Filter Agent Input */
+.filter-buttons input#filterAgentInput {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex-grow: 1;
+}
+
+/* Hover Effect for Filter Buttons */
+.filter-buttons button:hover {
+    background-color: #0056b3;
+}
+
+/* Active Filter Button Style */
+.filter-buttons button:active {
+    background-color: #003f7f;
+    color: #e0e0e0;
+}
+
+/* Disabled Button Style */
+.filter-buttons button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
 /* ------------------------------------------------------------------------------------------------------ */
 .logout-popup {
     display: none;

@@ -62,10 +62,34 @@ $(document).ready(function () {
         storeConnection('Add Connection', connectionInput);
     });
 
-        // Handle deleting a connection (similar to adding)
+    // Handle deleting a connection
     $('#deleteConnectionButton').on('click', function () {
-        const connectionInput = $('#workflow-textarea').val(); // Assuming it's from the same textarea
-        storeConnection('Delete Connection', connectionInput);
+        const connectionInput = $('#workflow-textarea').val();
+        const [agent1Text, agent2Text] = connectionInput.split(" AND ").map(str => str.trim());
+
+        // Check if input is valid
+        if (!agent1Text || !agent2Text) {
+            alert("Enter agent names in the format: Agent1 AND Agent2");
+            return;
+        }
+
+        // Find and remove the specified connection
+        const connectionIndex = connections.findIndex(connection =>
+            (connection.agent1 === agent1Text && connection.agent2 === agent2Text) ||
+            (connection.agent1 === agent2Text && connection.agent2 === agent1Text)
+        );
+
+        if (connectionIndex !== -1) {
+            // Remove the connection line from the DOM
+            connections[connectionIndex].line.remove();
+
+            // Remove the connection from the array
+            connections.splice(connectionIndex, 1);
+
+            alert(`Connection between ${agent1Text} and ${agent2Text} has been deleted.`);
+        } else {
+            alert("No such connection found. Please check the agent names.");
+        }
     });
 
 
@@ -119,35 +143,90 @@ $(document).ready(function () {
             alert('Please enter a valid agent name.');
         }
     }
-
-    // New logic for displaying the summary of all connections
+    //---------------------------------------------------------------------------------------//
     $('#summaryButton').on('click', function () {
-        if (summaryText === "") {
-            console.log("No highlights available to display.");
-            $('#summary-textarea').val("No highlights available.");
-        } else {
-            // Paste the summaryText into the summary text area or output it as desired
-            $('#summary-textarea').val(summaryText);
-    
-            // Log the summaryText variable
-            console.log("Current summaryText: ", summaryText);
+        displayFullSummary(); // Initial display of full summary
+    });
+   // Display the full summary
+    function displayFullSummary() {
+        let summaryContent = "";
+
+        // Include highlights for each agent
+        for (const agentName in highlights) {
+            summaryContent += `Agent: ${agentName}\n`;
+            highlights[agentName].forEach((highlight) => {
+                summaryContent += `Text: "${highlight.text}", Start: ${highlight.start}, End: ${highlight.end}, Color: ${highlight.color}\n`;
+            });
+            summaryContent += "\n"; // Add spacing between agents
         }
-        console.log('Summary button clicked');
-        // Fetch the summary from the backend
-        $.ajax({
-            url: '/get_summary',
-            method: 'GET',
-            success: function (response) {
-                // Display the summary in the new summary text area
-                let currentContent = $('#summary-textarea').val();
-                $('#summary-textarea').val(currentContent + response.summary);
-                console.log("Successfuly displayed summary")
-            },
-            error: function (error) {
-                console.error('Error:', error);
-                alert('Failed to fetch summary.');
-            }
+
+        // Include connections between agents
+        if (connections.length > 0) {
+            summaryContent += "Connections:\n";
+            connections.forEach((connection) => {
+                summaryContent += `Agent ${connection.agent1} <-> Agent ${connection.agent2}\n`;
+                summaryContent += `Connection Texts: "${connection.highlightText1}" and "${connection.highlightText2}", Color: ${connection.color}\n\n`;
+            });
+        }
+
+        $('#summary-textarea').val(summaryContent || "No highlights or connections available.");
+    }
+
+    // Filter connections only
+    $('#filterConnections').on('click', function () {
+        let summaryContent = "Connections:\n";
+        connections.forEach((connection) => {
+            summaryContent += `Agent ${connection.agent1} <-> Agent ${connection.agent2}\n`;
+            summaryContent += `Connection Texts: "${connection.highlightText1}" and "${connection.highlightText2}", Color: ${connection.color}\n\n`;
         });
+        $('#summary-textarea').val(summaryContent || "No connections available.");
+    });
+
+    // Filter highlights only
+    $('#filterHighlights').on('click', function () {
+        let summaryContent = "Highlights:\n";
+        for (const agentName in highlights) {
+            summaryContent += `Agent: ${agentName}\n`;
+            highlights[agentName].forEach((highlight) => {
+                summaryContent += `Text: "${highlight.text}", Start: ${highlight.start}, End: ${highlight.end}, Color: ${highlight.color}\n`;
+            });
+            summaryContent += "\n"; // Add spacing between agents
+        }
+        $('#summary-textarea').val(summaryContent || "No highlights available.");
+    });
+
+    // Filter by agent name
+    $('#filterAgent').on('click', function () {
+        const agentName = $('#filterAgentInput').val().trim();
+        if (!agentName) return;
+
+        let summaryContent = `Highlights and Connections for Agent: ${agentName}\n`;
+
+        // Check for highlights
+        if (highlights[agentName]) {
+            summaryContent += "Highlights:\n";
+            highlights[agentName].forEach((highlight) => {
+                summaryContent += `Text: "${highlight.text}", Start: ${highlight.start}, End: ${highlight.end}, Color: ${highlight.color}\n`;
+            });
+        } else {
+            summaryContent += "No highlights for this agent.\n";
+        }
+
+        // Check for connections
+        const agentConnections = connections.filter(
+            conn => conn.agent1 === agentName || conn.agent2 === agentName
+        );
+        if (agentConnections.length > 0) {
+            summaryContent += "\nConnections:\n";
+            agentConnections.forEach((connection) => {
+                summaryContent += `Agent ${connection.agent1} <-> Agent ${connection.agent2}\n`;
+                summaryContent += `Connection Texts: "${connection.highlightText1}" and "${connection.highlightText2}", Color: ${connection.color}\n\n`;
+            });
+        } else {
+            summaryContent += "No connections for this agent.\n";
+        }
+
+        $('#summary-textarea').val(summaryContent);
     });
 
 
@@ -268,19 +347,21 @@ $(document).ready(function () {
     $('.workflow-action-button').eq(0).on('click', function () {
         const connectionInput = $('#workflow-textarea').val();
         const [agent1Text, agent2Text] = connectionInput.split(" AND ").map(str => str.trim());
+    
+        // Find agent boxes based on agent names
         const agentBox1 = $(`.workflow-agent-box:contains("${agent1Text}")`).first();
         const agentBox2 = $(`.workflow-agent-box:contains("${agent2Text}")`).first();
-
+    
         if (agentBox1.length && agentBox2.length) {
             // Assign or reuse a color for this connection
             const connectionColor = agentColors[agent1Text] || getRandomColor();
             agentColors[agent1Text] = connectionColor;
             agentColors[agent2Text] = connectionColor;
-
+    
             // Highlight both agent names in headers with the same color
             highlightAgentName(agentBox1, connectionColor);
             highlightAgentName(agentBox2, connectionColor);
-
+    
             // Draw line between connected agents
             const line = $('<div class="connection-line"></div>').css({
                 background: connectionColor,
@@ -288,10 +369,24 @@ $(document).ready(function () {
             });
             $('body').append(line);
             drawLine(line, agentBox1, agentBox2);
-
-            connections.push({ line, agent1Text, agent2Text, color: connectionColor });
+    
+            // Retrieve highlights for these agents
+            const agent1Highlights = highlights[agent1Text] || [];
+            const agent2Highlights = highlights[agent2Text] || [];
+    
+            // Add the connection to the connections array
+            connections.push({
+                line,
+                agent1: agent1Text,
+                agent2: agent2Text,
+                highlightText1: agent1Highlights.map(h => h.text).join(', '),
+                highlightText2: agent2Highlights.map(h => h.text).join(', '),
+                color: connectionColor
+            });
+            
+            console.log(`Connection added between ${agent1Text} and ${agent2Text} with color ${connectionColor}`);
         } else {
-            alert("Enter valid agent texts in format: Agent1 Text AND Agent2 Text.");
+            alert("Enter valid agent names in format: Agent1 Text AND Agent2 Text.");
         }
     })
 
@@ -315,7 +410,6 @@ $(document).ready(function () {
             transformOrigin: '0 0'
         });
     }
-
 
     // ** Hide All Connections **
     $('.workflow-action-button').eq(4).on('click', function () {
@@ -385,20 +479,15 @@ $(document).ready(function () {
     function applyHighlight(agentBox, start, end, color) {
         const documentContent = $(agentBox).find('.document-content')[0];
         const selection = window.getSelection();
-    
         if (selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
             const span = document.createElement('span');
-    
-            // Apply the highlight style
+            const selectedText = range.toString();
             span.style.backgroundColor = color;
             span.classList.add('highlight');
-    
-            // Wrap the selected text in the span
             range.surroundContents(span);
-    
-            // Clear the selection after applying the highlight
             selection.removeAllRanges();
+            saveHighlight(agentBox, selectedText, start, end, color);
         }
         console.log(`Highlight applied with color ${color}`);
     }
@@ -427,39 +516,16 @@ $(document).ready(function () {
         }
     });
 
-    // Function to save highlights for the session and update the summary
-function saveHighlight(agentName, start, end, color) {
-    if (!highlights[agentName]) {
-        highlights[agentName] = [];
+    function saveHighlight(agentBox, text, start, end, color) {
+        const agentName = $(agentBox).find('h4').text();
+        if (!highlights[agentName]) {
+            highlights[agentName] = [];
+        }
+        highlights[agentName].push({ text, start, end, color });
+        console.log(`Highlight saved for agent ${agentName}: Text "${text}", Start ${start}, End ${end}, Color ${color}`);
     }
 
-    // Save the highlight into the highlights object
-    highlights[agentName].push({ start, end, color });
-
-    // Log to ensure the highlight is being saved
-    console.log(`Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}`);
-
-    // Automatically update the summaryText with the new highlight
-    summaryText += `Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}\n`;
-
-    // Log to ensure summaryText is being updated
-    console.log("Updated summary text: ", summaryText);
-}
-
-// Handle the Summary button click
-$('#summaryButton').on('click', function () {
-    // Log to ensure the button click works
-    console.log("Summary button clicked. Displaying summary...");
-
-    // Check if summaryText has been populated
-    if (summaryText === "") {
-        console.log("No highlights available to display.");
-        $('#summary-textarea').val("No highlights available.");
-    } else {
-        // Paste the summaryText into the summary text area or output it as desired
-        $('#summary-textarea').val(summaryText);
-    }
-});
+    
     //---------------------------------------------------------------------------------------//
 
     // Function to create a new agent

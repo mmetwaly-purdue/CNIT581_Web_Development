@@ -245,12 +245,6 @@ def store_connection():
     else:
         return jsonify({"message": "Invalid data"}), 400
 
-# Route to retrieve the summary of connections
-@app.route('/get_summary', methods=['GET'])
-def get_summary():
-    summary_text = ''.join(all_connections)
-    return jsonify({"summary": summary_text}), 200
-
 if __name__ == '__main__':
     app.run(debug=True)
 
