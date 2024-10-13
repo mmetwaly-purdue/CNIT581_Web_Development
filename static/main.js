@@ -4,11 +4,65 @@ $(document).ready(function () {
     const connections = []; // Store all connections
     const highlights = {};  // Store user highlights
     const agentColors = {}; // Store a consistent color per agent
+    let ascending = true; // Variable to track sort order
 
+    // Function to render agent buttons
+    function renderAgentButtons() {
+        const agentsContainer = $('.agents-container');
+        agentsContainer.empty(); // Clear the container before appending
+
+        if (typeof agent_list !== 'undefined' && agent_list.length > 0) {
+            agent_list.forEach((agent, index) => {
+                agentsContainer.append(`
+                    <a href="/agent_detail/${index}">
+                        <button class="agent-button">${agent.name}</button>
+                    </a>
+                `);
+            });
+        }
+    }
+
+    // Call the function to display the agents when the page loads
+    renderAgentButtons();
+
+    // Handle sorting when button is clicked
+    $('#sort-button').on('click', function () {
+        // Toggle between ascending and descending
+        ascending = !ascending;
+
+        // Sort the agent list based on the current sort order
+        if (ascending) {
+            agent_list.sort((a, b) => a.name.localeCompare(b.name)); // A-Z
+            $(this).text('Sort: A-Z');
+        } else {
+            agent_list.sort((a, b) => b.name.localeCompare(a.name)); // Z-A
+            $(this).text('Sort: Z-A');
+        }
+
+        // Re-render the agent buttons after sorting
+        renderAgentButtons();
+
+        // Clear existing agent buttons and repopulate them after sorting
+        const agentsContainer = $('.agents-container');
+        agentsContainer.empty();
+        agent_list.forEach((agent, index) => {
+            agentsContainer.append(`
+                <a href="/agent_detail/${index}">
+                    <button class="agent-button">${agent.name}</button>
+                </a>
+            `);
+        });
+    });
+    
     // Handle adding a connection
     $('#addConnectionButton').on('click', function () {
         const connectionInput = $('#workflow-textarea').val();
         storeConnection('Add Connection', connectionInput);
+    });
+
+    // Delete agent logic (when "Delete Agent" mode is enabled)
+    $('#delete-agent-mode').on('click', function () {
+        deleteAgentMode(); // Call the function to delete agents
     });
 
     // Handle other button presses (for example, 'Delete Connection')
@@ -37,6 +91,29 @@ $(document).ready(function () {
                 alert('Failed to store connection.');
             }
         });
+    }
+
+    // Function to delete agent from the list based on name
+    function deleteAgentMode() {
+        const agentName = prompt("Enter the name of the agent you want to delete:");
+
+        if (agentName !== null && agentName.trim() !== '') {
+            // Find the index of the agent with the specified name
+            const agentIndex = agent_list.findIndex(agent => agent.name.toLowerCase() === agentName.trim().toLowerCase());
+
+            if (agentIndex !== -1) {
+                // Remove the agent from agent_list
+                agent_list.splice(agentIndex, 1);
+                alert(`Agent "${agentName}" deleted successfully!`);
+                
+                // Re-render the agent buttons after deletion
+                renderAgentButtons();
+            } else {
+                alert(`Agent "${agentName}" not found.`);
+            }
+        } else {
+            alert('Please enter a valid agent name.');
+        }
     }
 
     // New logic for displaying the summary of all connections
@@ -395,6 +472,7 @@ $(document).ready(function () {
             }
         });
     });
+
 
 
     // Function to dynamically load agents on the Agents page

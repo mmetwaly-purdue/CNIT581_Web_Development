@@ -43,20 +43,45 @@
 
     <main>
         <div class="main-content">
+            <!-- Sign In Modal -->
+            <div id="signInModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeSignIn">&times;</span>
+                    <h2>Sign In</h2>
+                    <form id="signInForm">
+                        <input type="text" id="signInUsername" placeholder="Username" required>
+                        <input type="password" id="signInPassword" placeholder="Password" required>
+                        <button type="submit">Sign In</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Register Modal -->
+            <div id="registerModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeRegister">&times;</span>
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <input type="text" id="registerUsername" placeholder="Username" required>
+                        <input type="password" id="registerPassword" placeholder="Password" required>
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                        <button type="submit">Register</button>
+                    </form>
+                </div>
+            </div>
             <h1>Sensemaking Multi-Agents</h1>
             <p>Explore agents that help make sense of complex data through collaboration and analysis.</p>
 
             <div class="controls">
                 <button id="sort-button">Sort: A-Z</button>
-                <button id="filter-button">Filter: Accuracy - 100%</button>
-                <button id="create-group-button">Create Group</button>
                 <button id="delete-agent-mode" class="delete-agent-mode-button">Delete Agent</button>
             </div>
+            
 
             <!-- Container for dynamically generated agent buttons -->
             <div class="agents-container">
                 <!-- Default agents -->
-                <a href="/agent_detail/0">
+                <!--<a href="/agent_detail/0">
                     <button class="agent-button">Default Agent 1</button>
                 </a>
                 <a href="/agent_detail/1">
@@ -64,12 +89,11 @@
                 </a>
                 <a href="/agent_detail/2">
                     <button class="agent-button">Default Agent 3</button>
-                </a>
+                </a>-->
                 <!-- New agent buttons will be appended here dynamically -->
             </div>
         </div>
     </main>
-
     <!-- Footer with additional links -->
     <footer>
         <nav>
@@ -81,6 +105,13 @@
         </nav>
     </footer>
 
+    <script type="text/javascript">
+        const agent_list = {{ agents | tojson }};
+        console.log("Loaded agent list:", agent_list); // For debugging
+    </script>
+    
+
     <script src="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
 </body>
 </html>
+

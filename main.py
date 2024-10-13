@@ -54,13 +54,28 @@ class Agent:
         self.auto_connect = auto_connect
         self.created_by = "Admin"
         self.date_created = str(datetime.datetime.now())
+        
+     # Add a method to return a dictionary that can be serialized to JSON
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "type": self.type,
+            "description": self.description,
+            "key_terms": self.key_terms,
+            "output_structure": self.output_structure,
+            "group": self.group,
+            "print_line": self.print_line,
+            "auto_connect": self.auto_connect,
+            "created_by": self.created_by,
+            "date_created": self.date_created
+        }
 
-# Sample list to hold agents
-agent_list = [
+# Create the agent_list with dictionaries instead of raw objects
+agent_list = [agent.to_dict() for agent in [
     Agent("Alias Name Agent", "Type 1", "Description of default agent 1", "Term 1, Term 2", "Structure 1"),
     Agent("Address Agent", "Type 2", "Description of default agent 2", "Term 3, Term 4", "Structure 2"),
-    Agent("Dates Agent", "Type 3", "Description of default agent 3", "Term 5, Term 6", "Structure 3")
-]
+    Agent("Dates Agent", "Type 3", "Description of default agent 3", "Term 5, Term 6", "Structure 3"),
+]]
 
 # Define the Document model to store uploaded documents
 class Document(db.Model):
@@ -107,7 +122,11 @@ def create_page():
 
 @app.route('/agents')
 def agents_page():
-    return render_template("agents_page.html", agents=agent_list)
+    agents_data = [
+        agent.to_dict() if isinstance(agent, Agent) else agent
+        for agent in agent_list
+    ]
+    return render_template("agents_page.html", agents=agents_data)
 
 @app.route('/agent_detail/<int:agent_id>')
 def agent_detail(agent_id):
@@ -130,6 +149,10 @@ def create_agent():
     print_line = data.get('print_line')
     auto_connect = data.get('auto_connect')
 
+    # Make sure all fields are properly retrieved
+    if not agent_name or not agent_type or not agent_description:
+        return jsonify({"message": "Missing required fields"}), 400
+    
     new_agent = Agent(agent_name, agent_type, agent_description, key_terms, output_structure, group, print_line, auto_connect)
     
     # Add the new agent to the agent_list
