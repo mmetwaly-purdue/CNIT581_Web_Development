@@ -563,5 +563,17 @@ $('#summaryButton').on('click', function () {
         $('#logoutPopup').hide();
         $('#userLogo').hide();
         $('.workflow-agent-grid').hide();
+        initializeAuthButtons(); // Reattach event handlers
     });
+    
+    function initializeAuthButtons() {
+        $('#signInBtn').on('click', function () {
+            $('#signInModal').css('display', 'flex');
+        });
+    
+        $('#registerBtn').on('click', function () {
+            $('#registerModal').css('display', 'flex');
+        });
+    }
+
 });

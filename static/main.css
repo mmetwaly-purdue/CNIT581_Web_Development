@@ -220,7 +220,36 @@ button:hover {
     padding: 20px 0;
 
 }
+.workflow-example-section {
+    background-color: #fff;
+    padding: 50px 20px; /* Add padding around the grid */
+}
 
+.workflow-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 20px; /* Gap between grid items */
+    justify-items: center;
+}
+
+.workflow-item {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Gap between the image and text */
+}
+
+.workflow-item img {
+    width: 200px;
+    height: 200px;
+    border: 2px solid #000; /* Placeholder styling */
+    
+}
+
+.workflow-item p {
+    font-size: 16px;
+    color: #333;
+}
+/* ------------------------------------------------------------------------------------------------------ */
 .logout-popup {
     display: none;
     position: absolute;
@@ -249,37 +278,8 @@ button:hover {
 .logout-popup button:hover {
     background-color: #c9302c;
 }
-
-.workflow-example-section {
-    background-color: #fff;
-    padding: 50px 20px; /* Add padding around the grid */
-}
-
-.workflow-gallery {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
-    gap: 20px; /* Gap between grid items */
-    justify-items: center;
-}
-
-.workflow-item {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Gap between the image and text */
-}
-
-.workflow-item img {
-    width: 80px;
-    height: 80px;
-    border: 2px solid #000; /* Placeholder styling */
-    object-fit: cover;
-}
-
-.workflow-item p {
-    font-size: 16px;
-    color: #333;
-}
-
+/* ------------------------------------------------------------------------------------------------------ */
+/*User Workflow Connection Styles*/
 .connection-line {
     position: absolute;
     background-color: black;
@@ -298,7 +298,7 @@ button:hover {
 .connected-highlight {
     background-color: lightblue !important;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 #deleteAgentModal {
     display: none; /* Hidden by default */
     position: fixed;
@@ -332,7 +332,7 @@ button:hover {
     font-size: 16px;
     cursor: pointer;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 /*Terms of service content style*/
 .tos-header {
     background-color: #333;
@@ -351,7 +351,6 @@ button:hover {
     font-size: 14px;
 }
 
-/* Main Content Styles */
 .tos-content {
     max-width: 800px;
     margin: 50px auto;
@@ -374,7 +373,6 @@ button:hover {
     margin: 10px 0;
 }
 
-/* Footer Styles */
 .tos-footer {
     background-color: #333;
     color: #fff;
@@ -388,7 +386,7 @@ button:hover {
 .tos-footer p {
     margin: 0;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 /*Privacy Policy Content Styles*/
 .privacy-header {
     background-color: #333;
@@ -407,7 +405,6 @@ button:hover {
     font-size: 14px;
 }
 
-/* Main Content Styles */
 .privacy-content {
     max-width: 800px;
     margin: 50px auto;
@@ -438,7 +435,7 @@ button:hover {
 .privacy-content ul li {
     margin-bottom: 10px;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 /* Footer Styles */
 .privacy-footer {
     background-color: #333;
@@ -453,7 +450,7 @@ button:hover {
 .privacy-footer p {
     margin: 0;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 /*Workflow page Content Style*/
 .user-workflow-section {
     background-color: #d3d3d3;
@@ -541,7 +538,7 @@ button:hover {
     border: 1px solid #ccc;
     border-radius: 8px;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 /* Authentication Buttons */
 .auth-buttons {
     margin: 10px;
@@ -553,45 +550,7 @@ button:hover {
     font-size: 16px;
     cursor: pointer;
 }
-
-/* Modal Styles */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    text-align: center;
-    position: relative;
-}
-
-.modal-content h2 {
-    margin: 0;
-}
-
-.modal-content input {
-    width: 80%;
-    padding: 10px;
-    margin: 10px 0;
-}
-
-.modal-content button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
+/* ------------------------------------------------------------------------------------------------------ */
 /* Close Button */
 .close {
     position: absolute;
@@ -601,9 +560,7 @@ button:hover {
     font-size: 24px;
 }
 
-
-
-
+/* ------------------------------------------------------------------------------------------------------ */
 /* Agent Details Page Specific Styling */
 .agent-details {
     padding: 20px;
@@ -687,6 +644,7 @@ textarea {
     border: none;
     cursor: pointer;
 }
+/* ------------------------------------------------------------------------------------------------------ */
 /* Agent hover tooltip styling */
 .agent-button {
     position: relative;
@@ -710,7 +668,7 @@ textarea {
 .agent-button:hover .tooltip {
     display: block;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 /* Create a New Agent Page Specific Styling */
 .create-agent {
     padding: 20px;
@@ -782,7 +740,7 @@ textarea {
 .create-agent-button button:hover {
     background-color: #bbb;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 /* General centering of titles and text */
 .about-us-header h1,
 .mission-vision h2,
@@ -848,31 +806,7 @@ textarea {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
 }
 
-/* Footer styling */
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #f5f5f5;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-}
-
-footer ul {
-    list-style: none;
-    padding: 0;
-}
-
-footer ul li {
-    display: inline;
-    margin: 0 10px;
-}
-
-footer ul li a {
-    text-decoration: none;
-    color: #333;
-}
-
+/* ------------------------------------------------------------------------------------------------------ */
 /* Styling for modals (Sign In and Register) */
 .modal {
     display: none; /* Hidden by default */
@@ -912,7 +846,7 @@ footer ul li a {
     cursor: pointer;
     border-radius: 4px;
 }
-
+/* ------------------------------------------------------------------------------------------------------ */
 /* Close button for modals */
 .close {
     position: absolute;

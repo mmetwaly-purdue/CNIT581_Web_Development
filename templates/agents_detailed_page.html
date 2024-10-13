@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="text/css" rel="stylesheet" href="../static/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Agent Details - Multi-Agent Sensemaking</title>
 </head>
 
@@ -75,7 +76,7 @@
             </div>
             <div class="agent-info-container">
                 <div class="agent-image">
-                    <img src="../media/placeholder-image.png" alt="Agent Image">
+                    <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
                 </div>
                 <div class="agent-details-content">
                     <div class="agent-detail-row">
@@ -133,6 +134,6 @@
         </nav>
     </footer>
 
-    <script href="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
 </body>
 </html>
