@@ -1,9 +1,63 @@
 $(document).ready(function () {
-    // Check if user is signed in and set up user interface
+    // This is where your existing button logic and document ready logic starts
     const storedUsername = localStorage.getItem('username');
     const connections = []; // Store all connections
-    const highlights = {}; // Store user highlights
+    const highlights = {};  // Store user highlights
     const agentColors = {}; // Store a consistent color per agent
+
+    // Handle adding a connection
+    $('#addConnectionButton').on('click', function () {
+        const connectionInput = $('#workflow-textarea').val();
+        storeConnection('Add Connection', connectionInput);
+    });
+
+    // Handle other button presses (for example, 'Delete Connection')
+    $('.workflow-action-button').eq(1).on('click', function () {
+        const connectionInput = $('#workflow-textarea').val();
+        storeConnection('Delete Connection', connectionInput);
+    });
+
+    // Store connection function
+    function storeConnection(buttonPressed, connectionText) {
+        $.ajax({
+            url: '/store_connection',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                button: buttonPressed,
+                connection_text: connectionText
+            }),
+            success: function (response) {
+                console.log(response.message);
+                // Clear the input field after storing the connection
+                $('#workflow-textarea').val('');
+            },
+            error: function (error) {
+                console.error('Error:', error);
+                alert('Failed to store connection.');
+            }
+        });
+    }
+
+    // New logic for displaying the summary of all connections
+    $('#summaryButton').on('click', function () {
+        console.log('Summary button clicked');
+        // Fetch the summary from the backend
+        $.ajax({
+            url: '/get_summary',
+            method: 'GET',
+            success: function (response) {
+                // Display the summary in the new summary text area
+                $('#summary-textarea').val(response.summary);
+                console.log("Successfuly displayed summary")
+            },
+            error: function (error) {
+                console.error('Error:', error);
+                alert('Failed to fetch summary.');
+            }
+        });
+    });
+
 
 
     //---------------------------------------------------------------------------------------//

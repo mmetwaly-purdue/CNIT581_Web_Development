@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import os, random, codecs, time, datetime, logging, json, re  # Standard Python library modules
 import termcolor  # Installed module
+logging.basicConfig(level=logging.DEBUG)
 
 print("# Logging of HTTP requests is NOT disabled.")
 logging.getLogger('werkzeug').disabled = False
@@ -180,7 +181,6 @@ def register():
         return jsonify({"message": "Missing fields"}), 400
 
     new_user = User(username=username, password=password, email=email)
-
     try:
         db.session.add(new_user)
         db.session.commit()
@@ -201,5 +201,33 @@ def signin():
     else:
         return jsonify({"message": "Invalid credentials"}), 401
 
+# A list to store all connections on the backend
+all_connections = []
+
+# Route to handle storing connections
+@app.route('/store_connection', methods=['POST'])
+def store_connection():
+    data = request.json
+    if not data:
+        return jsonify({"message": "No data received"}), 400
+
+    button_pressed = data.get('button')
+    connection_text = data.get('connection_text')
+
+    if button_pressed and connection_text:
+        # Format: (Button Pressed) - text /n
+        formatted_connection = f"{button_pressed} - {connection_text}\n"
+        all_connections.append(formatted_connection)
+        return jsonify({"message": "Connection stored successfully"}), 200
+    else:
+        return jsonify({"message": "Invalid data"}), 400
+
+# Route to retrieve the summary of connections
+@app.route('/get_summary', methods=['GET'])
+def get_summary():
+    summary_text = ''.join(all_connections)
+    return jsonify({"summary": summary_text}), 200
+
 if __name__ == '__main__':
     app.run(debug=True)
+
