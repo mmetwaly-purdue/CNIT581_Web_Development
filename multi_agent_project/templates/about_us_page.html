@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='main.css') }}"> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>About Us - Multi-Agent Sensemaking</title>
+</head>
+<body> 
+    <header id="navigation_bar"></header>
+    <nav class="navbar">
+        <div class="logo-search-container">
+            <div class="user-logo-container">
+                <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo">
+            </div>
+            <div class="search-container">
+                <input type="text" placeholder="Hinted search text">
+                <button class="search-button">
+                    <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
+                </button>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home_page') }}">Home</a></li>
+            <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
+            <li><a href="{{ url_for('create_page') }}">Create</a></li>
+            <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+            <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
+        </ul>
+        <div class="auth-buttons">
+            <button id="signInBtn">Sign In</button>
+            <button id="registerBtn">Register</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Sign In Modal -->
+        <div id="signInModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeSignIn">&times;</span>
+                <h2>Sign In</h2>
+                <form id="signInForm">
+                    <input type="text" id="signInUsername" placeholder="Username" required>
+                    <input type="password" id="signInPassword" placeholder="Password" required>
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeRegister">&times;</span>
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <input type="text" id="registerUsername" placeholder="Username" required>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+        <!-- About Us Section -->
+        <section class="about-us-section">
+            <div class="about-us-header">
+                <h1>About Us</h1>
+                <p>Discover who we are, our mission, and the team that drives us forward.</p>
+            </div>
+
+            <div class="mission-vision">
+                <h2>Our Mission</h2>
+                <p>At Multi-Agent Sensemaking, we empower users to make sense of complex problems by creating AI agents that help organize, analyze, and connect information. Our goal is to give users the tools to visualize the relationships between their documents, aiding them in solving mysteries, making discoveries, or resolving challenges more effectively.</p>
+
+                <h2>Our Vision</h2>
+                <p>We envision a future where LLM Agents assists human problem-solving in a collaborative way. By integrating artificial intelligence into the process of document analysis and connection-making, we help users develop their own insights and build solutions, all while keeping them in control of the narrative.</p>
+            </div>
+
+            <div class="how-it-works">
+                <h2>How It Works</h2>
+                <p>Users upload their documents to our platform, and by creating custom AI agents, they can extract relevant information from each document. Our system doesn't provide the solution but helps users build a story or a case, much like a detective assembling clues. The AI agents act as assistants, helping users connect the dots, visualize patterns, and make informed decisions.</p>
+            </div>
+
+            <div class="why-sensemaking">
+                <h2>Why Multi-Agent Sensemaking?</h2>
+                <p>Our platform is designed with the user at its core. We believe that the most powerful solutions come from users who are able to harness technology in ways that empower their own decision-making. We aim to provide a platform that is not only easy to use but is a powerful tool in helping users discover the hidden connections within their data.</p>
+            </div>
+
+            <div class="team">
+                <h2>Meet the Team</h2>
+                <div class="team-members">
+                    <div class="team-member">
+                        <img src="{{ url_for('static', filename='media/member1.jpg') }}" alt="Ali Shakir">
+                        <div>
+                            <h3>Ali Shakir</h3>
+                            <p>Computer Information Technology</p>
+                            <p>Senior</p>
+                            <p>Ali Shakir has worked in web design for six years.</p>
+                        </div>
+                    </div>
+
+                    <div class="team-member">
+                        <img src="{{ url_for('static', filename='media/member2.jpg') }}" alt="Mohammed Metwaly">
+                        <div>
+                            <h3>Mohammed Metwaly</h3>
+                            <p>Computer Engineering</p>
+                            <p>PhD student with a focus on Mixed Reality research in Engineering Education.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sign In Modal -->
+        <div id="signInModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeSignIn">&times;</span>
+                <h2>Sign In</h2>
+                <form id="signInForm">
+                    <input type="text" id="signInUsername" placeholder="Username" required>
+                    <input type="password" id="signInPassword" placeholder="Password" required>
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeRegister">&times;</span>
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <input type="text" id="registerUsername" placeholder="Username" required>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+                <li><a href="{{ url_for('terms_page') }}">Terms of Service</a></li>
+                <li><a href="{{ url_for('privacy_page') }}">Privacy Policy</a></li>
+            </ul>
+        </nav>
+    </footer>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>  <!-- Linking to your JavaScript file -->
+</body>
+</html>

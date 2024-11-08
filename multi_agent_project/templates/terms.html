@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link type="text/css" rel="stylesheet" href="../static/main.css"> 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body> 
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <title>Terms of Service</title>
+            <link rel="stylesheet" href="styles.css">
+        </head>
+        <body>
+        
+        <!-- Terms of Service Page Header -->
+        <header id="navigation_bar"></header>
+            <nav class="navbar">
+                <div class="logo-search-container">
+                    <!-- Logo (User Icon) -->
+                    <div class="user-logo-container">
+                        <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo" id="userLogo">
+                        <!-- Logout Popup -->
+                        <div id="logoutPopup" class="logout-popup">
+                            <p>Are you sure you want to logout?</p>
+                            <button id="confirmLogout">Logout</button>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="search-container">
+                        <input type="text" placeholder="Hinted search text">
+                        <button class="search-button">
+                            <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
+                        </button>
+                    </div>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('home_page') }}">Home</a></li>
+                    <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
+                    <li><a href="{{ url_for('create_page') }}">Create</a></li>
+                    <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
+                    <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
+                </ul>
+                <!-- Sign In and Register Buttons in Header -->
+                <div class="auth-buttons">
+                    <button id="signInBtn">Sign In</button>
+                    <button id="registerBtn">Register</button>
+                </div>
+            </nav>
+        </header>
+        <header class="tos-header">
+            <h1>Terms of Service</h1>
+            <p>Last updated: October 5, 2024</p>
+        </header>
+        <!-- Sign In Modal -->
+        <div id="signInModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeSignIn">&times;</span>
+                <h2>Sign In</h2>
+                <form id="signInForm">
+                    <input type="text" id="signInUsername" placeholder="Username" required>
+                    <input type="password" id="signInPassword" placeholder="Password" required>
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeRegister">&times;</span>
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <input type="text" id="registerUsername" placeholder="Username" required>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+        <!-- Main Content Section -->
+        <main class="tos-content">
+            <section>
+                <h2>1. Introduction</h2>
+                <p>Welcome to Multi-Agent Sensemaking. By using our website, you agree to comply with and be bound by the following terms of service. Please review the terms carefully. If you do not agree with these terms, you should not use this website.</p>
+            </section>
+    
+            <section>
+                <h2>2. Use of Website</h2>
+                <p>You agree to use this website for lawful purposes only. You must not use the website in any way that causes, or may cause, damage to the website or impairment of the availability or accessibility of the website.</p>
+            </section>
+    
+            <section>
+                <h2>3. User Account</h2>
+                <p>To access certain features of the website, you may be required to create an account. You must ensure that the details provided during registration are correct and kept up-to-date. You are responsible for maintaining the confidentiality of your account and password.</p>
+            </section>
+    
+            <section>
+                <h2>4. Intellectual Property Rights</h2>
+                <p>All content, trademarks, and other intellectual property on this website are the property of Multi-Agent Sensemaking. You are granted a limited license to use the website for personal, non-commercial purposes, but you may not reproduce, distribute, or exploit any content for commercial purposes without express permission.</p>
+            </section>
+    
+            <section>
+                <h2>5. Limitation of Liability</h2>
+                <p>Multi-Agent Sensemaking will not be held liable for any damages arising from the use of this website. We provide the website on an "as is" and "as available" basis without any warranties of any kind, either express or implied.</p>
+            </section>
+    
+            <section>
+                <h2>6. Termination</h2>
+                <p>We reserve the right to suspend or terminate your access to the website at any time, without notice, for conduct that we believe violates these terms of service or is harmful to other users of the website.</p>
+            </section>
+    
+            <section>
+                <h2>7. Governing Law</h2>
+                <p>These terms shall be governed and construed in accordance with the laws of USA, without regard to its conflict of law provisions.</p>
+            </section>
+    
+            <section>
+                <h2>8. Changes to These Terms</h2>
+                <p>We may update our Terms of Service from time to time. We will notify you of any changes by posting the new Terms of Service on this page. It is your responsibility to check this page periodically for changes.</p>
+            </section>
+    
+            <section>
+                <h2>9. Contact Us</h2>
+                <p>If you have any questions about these Terms of Service, please contact us at: mmetwaly@purdue.edu</p>
+            </section>
+        </main>
+    
+        <!-- Footer Section -->
+        <footer class="tos-footer">
+            <p>&copy; 2024 Purdue University CNIT581. All rights reserved. Credit ChatGPT</p>
+        </footer>
+                  
+        <script src="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
+	</body>
+</html>
