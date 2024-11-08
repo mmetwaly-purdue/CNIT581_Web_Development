@@ -29,11 +29,11 @@
                     </div>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="{{ url_for('home_page') }}">Home</a></li>
-                    <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
-                    <li><a href="{{ url_for('create_page') }}">Create</a></li>
-                    <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
-                    <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
+                    <li><a href="{% url 'home_page' %">Home</a></li>
+                    <li><a href="{% url 'agents_page' %">Agents</a></li>
+                    <li><a href="{% url 'create_page' %">Create</a></li>
+                    <li><a href="{% url 'about_us_page' %">About Us</a></li>
+                    <li><a href="{% url 'workflow_page' %">Workflow</a></li>
                 </ul>
                 <!-- Sign In and Register Buttons in Header -->
                 <div class="auth-buttons">
@@ -105,9 +105,9 @@
         <footer>
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
-                    <li><a href="{{ url_for('terms_page') }}">Terms of Service</a></li>
-                    <li><a href="{{ url_for('privacy_page') }}">Privacy Policy</a></li>
+                    <li><a href="{% url 'about_us_page' %">About Us</a></li>
+                    <li><a href="{% url 'terms_page' %">Terms of Service</a></li>
+                    <li><a href="{% url 'privacy_page' %">Privacy Policy</a></li>
                 </ul>
             </nav>
         </footer>

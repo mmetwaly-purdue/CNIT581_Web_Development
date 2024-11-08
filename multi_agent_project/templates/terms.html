@@ -3,7 +3,7 @@
     <head>  
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link type="text/css" rel="stylesheet" href="../static/main.css"> 
+        <link type="text/css" rel="stylesheet" href="{% static 'main.css' %}"> 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body> 
@@ -24,7 +24,7 @@
                 <div class="logo-search-container">
                     <!-- Logo (User Icon) -->
                     <div class="user-logo-container">
-                        <img src="{{ url_for('static', filename='media/user-icon-on-transparent-background-free.png') }}" alt="Logo" class="user-logo" id="userLogo">
+                        <img src="{% static  'media/user-icon-on-transparent-background-free.png' %}" alt="Logo" class="user-logo" id="userLogo">
                         <!-- Logout Popup -->
                         <div id="logoutPopup" class="logout-popup">
                             <p>Are you sure you want to logout?</p>
@@ -36,16 +36,16 @@
                     <div class="search-container">
                         <input type="text" placeholder="Hinted search text">
                         <button class="search-button">
-                            <img src="{{ url_for('static', filename='media/pngtree-vector-search-icon.jpg') }}" alt="Search Icon">
+                            <img src="{% static 'media/pngtree-vector-search-icon.jpg' %}" alt="Search Icon">
                         </button>
                     </div>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="{{ url_for('home_page') }}">Home</a></li>
-                    <li><a href="{{ url_for('agents_page') }}">Agents</a></li>
-                    <li><a href="{{ url_for('create_page') }}">Create</a></li>
-                    <li><a href="{{ url_for('about_us_page') }}">About Us</a></li>
-                    <li><a href="{{ url_for('workflow_page') }}">Workflow</a></li>
+                    <li><a href="{% url 'home_page' %">Home</a></li>
+                    <li><a href="{% url 'agents_page' %">Agents</a></li>
+                    <li><a href="{% url 'create_page' %">Create</a></li>
+                    <li><a href="{% url 'about_us_page' %">About Us</a></li>
+                    <li><a href="{% url 'workflow_page' %">Workflow</a></li>
                 </ul>
                 <!-- Sign In and Register Buttons in Header -->
                 <div class="auth-buttons">
@@ -137,6 +137,6 @@
             <p>&copy; 2024 Purdue University CNIT581. All rights reserved. Credit ChatGPT</p>
         </footer>
                   
-        <script src="{{ url_for('static', filename='main.js') }}"></script> <!-- Linking to your JavaScript file -->
+        <script src="{% static 'main.js' %}"></script> <!-- Linking to your JavaScript file -->
 	</body>
 </html>
