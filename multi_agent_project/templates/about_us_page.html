@@ -23,11 +23,11 @@
             </div>
         </div>
         <ul class="nav-links">
-            <li><a href="{% url 'home_page' %">Home</a></li>
-            <li><a href="{% url 'agents_page' %">Agents</a></li>
-            <li><a href="{% url 'create_page' %">Create</a></li>
-            <li><a href="{% url 'about_us_page' %">About Us</a></li>
-            <li><a href="{% url 'workflow_page' %">Workflow</a></li>
+            <li><a href="{% url 'home_page' %}">Home</a></li>
+            <li><a href="{% url 'agents_page' %}">Agents</a></li>
+            <li><a href="{% url 'create_page' %}">Create</a></li>
+            <li><a href="{% url 'about_us_page' %}">About Us</a></li>
+            <li><a href="{% url 'workflow_page' %}">Workflow</a></li>
         </ul>
         <div class="auth-buttons">
             <button id="signInBtn">Sign In</button>
@@ -91,7 +91,7 @@
                 <h2>Meet the Team</h2>
                 <div class="team-members">
                     <div class="team-member">
-                        <img src="{{ url_for('static', filename='media/member1.jpg') }}" alt="Ali Shakir">
+                        <img src="{% static 'media/member1.jpg' %}" alt="Ali Shakir">
                         <div>
                             <h3>Ali Shakir</h3>
                             <p>Computer Information Technology</p>
