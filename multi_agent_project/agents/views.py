@@ -1,21 +1,23 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 import json
 from django.contrib.auth.models import User
-from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import get_user_model, authenticate, login, logout
 from .models import Document, CustomUser
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .utils import agent_list, allowed_file, Agent
+from django.utils.safestring import mark_safe
 
+User = get_user_model()
 
 # Create your views here.
 def about_us_page(request):
     return render(request, 'about_us_page.html')
 
 def home_page(request):
+    print("Rendering homepage.html")
     return render(request, 'homepage.html')
 
 def privacy_page(request):
@@ -34,15 +36,21 @@ def workflow_page(request):
     return render(request, 'user_workflow_page.html', {'documents': documents, 'logged_in': True})
 
 def agents_page(request):
-    agents_data = agent_list  # Assuming agent_list is pre-defined as a Python list
-    return render(request, 'agents_page.html', {'agents': agents_data})
+    # Serialize agents as JSON
+    agents_json = mark_safe(json.dumps(agent_list))  # Escapes and marks as safe for the template
+    return render(request, 'agents_page.html', {'agents': agents_json})
 
 def agent_detail(request, agent_id):
     try:
-        agent = agent_list[agent_id]
-        return render(request, 'agents_detailed_page.html', {'agent': agent})
-    except IndexError:
-        return render(request, '404.html')  # Render a 404 page if the agent is not found
+        agent_id = int(agent_id)
+        agent = next((agent for agent in agent_list if int(agent['id']) == agent_id), None)
+
+        if agent:
+            return render(request, 'agents_detailed_page.html', {'agent': agent})
+        else:
+            return HttpResponse("Agent not found", status=404)
+    except (ValueError, TypeError):
+        return HttpResponse("Invalid agent ID", status=400)
 
 def create_agent(request):
     if request.method == 'POST':
@@ -90,52 +98,65 @@ def upload_document(request):
         return HttpResponseRedirect(reverse('workflow_page'))
     else:
         return JsonResponse({"error": "No file uploaded"}, status=400)
-                    
-@csrf_exempt
+                  
 def register(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-        except json.JSONDecodeError:
-            return JsonResponse({"message": "No data received"}, status=400)
+            email = data.get('email')
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            password = data.get('password')
 
-        username = data.get('username')
-        password = data.get('password')
-        email = data.get('email')
+            # Validate fields
+            if not email or not first_name or not last_name or not password:
+                return JsonResponse({"message": "Missing fields"}, status=400)
 
-        if not username or not password or not email:
-            return JsonResponse({"message": "Missing fields"}, status=400)
+            # Check if email exists
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({"message": "Email already exists"}, status=400)
 
-        try:
-            new_user = User.objects.create_user(username=username, password=password, email=email)
-            return JsonResponse({"message": "User registered successfully", "username": username}, status=201)
-        except IntegrityError:
-            return JsonResponse({"message": "Username or email already exists"}, status=400)
-    else:
-        return JsonResponse({"message": "Invalid request method"}, status=405)
-    
-@csrf_exempt
+            # Create the user
+            user = User.objects.create_user(
+                username=email,  # Use email as username
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
+            return JsonResponse({"message": "User registered successfully"}, status=201)
+        except Exception as e:
+            return JsonResponse({"message": f"Error: {str(e)}"}, status=500)
+    return JsonResponse({"message": "Invalid request method"}, status=405)
+
 def signin(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            email = data.get('username')  # This expects email as the username
+            password = data.get('password')
         except json.JSONDecodeError:
-            return JsonResponse({"message": "No data received"}, status=400)
+            return JsonResponse({"message": "Invalid data format"}, status=400)
 
-        username = data.get('username')
-        password = data.get('password')
-
-        if not username or not password:
+        if not email or not password:
             return JsonResponse({"message": "Missing fields"}, status=400)
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=email, password=password)
         if user is not None:
-            login(request, user)  # Log in the user (Django handles sessions automatically)
-            return JsonResponse({"message": "Signed in successfully"}, status=200)
+            login(request, user)
+            return JsonResponse({
+                "message": "Signed in successfully",
+                "username": user.first_name or user.username  # Preferably show the first name
+            }, status=200)
         else:
             return JsonResponse({"message": "Invalid credentials"}, status=401)
-    else:
-        return JsonResponse({"message": "Invalid request method"}, status=405)
+    return JsonResponse({"message": "Invalid request method"}, status=405)
+
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        return JsonResponse({"message": "Logged out successfully."}, status=200)
+    return JsonResponse({"message": "Invalid request method."}, status=405)
 
 all_connections = []
 

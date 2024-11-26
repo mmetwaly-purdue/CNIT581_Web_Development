@@ -16,16 +16,16 @@
         <div class="logo-search-container">
             <!-- Logo (User Icon) -->
             <div class="user-logo-container">
-                <img src="{% static  'media/user-icon-on-transparent-background-free.png' %}" alt="Logo" class="user-logo">
+                {% if request.user.is_authenticated %}
+                    <img src="{% static 'media/user-icon-on-transparent-background-free.png' %}" alt="Logo" class="user-logo" id="userLogo">
+                    <!-- Logout Popup -->
+                    <div id="logoutPopup" class="logout-popup" style="display: none;">
+                        <p>Are you sure you want to logout?</p>
+                        <button id="confirmLogout">Logout</button>
+                    </div>
+                {% endif %}
             </div>
 
-            <!-- Search Bar -->
-            <div class="search-container">
-                <input type="text" placeholder="Hinted search text">
-                <button class="search-button">
-                    <img src="{% static 'media/pngtree-vector-search-icon.jpg' %}" alt="Search Icon">
-                </button>
-            </div>
         </div>
         <ul class="nav-links">
             <li><a href="{% url 'home_page' %}">Home</a></li>
@@ -34,39 +34,44 @@
             <li><a href="{% url 'about_us_page' %}">About Us</a></li>
             <li><a href="{% url 'workflow_page' %}">Workflow</a></li>
         </ul>
-        <!-- Sign In and Register Buttons in Header -->
         <div class="auth-buttons">
-            <button id="signInBtn">Sign In</button>
-            <button id="registerBtn">Register</button>
+            {% if request.user.is_authenticated %}
+                <p>Hello, {{ request.user.username }}!</p>
+            {% else %}
+                <button id="signInBtn">Sign In</button>
+                <button id="registerBtn">Register</button>
+            {% endif %}
         </div>
     </nav>
     </header>
 
     <main>
         <div class="main-content">
+            <!-- Registration and Sign In-->
+            <!-- Register Modal -->
+            <div id="registerModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeRegister">&times;</span>
+                    <h2>Register</h2>
+                    <form id="registerForm" method="POST">
+                        <input type="text" id="registerFirstName" placeholder="First Name" required>
+                        <input type="text" id="registerLastName" placeholder="Last Name" required>
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                        <input type="password" id="registerPassword" placeholder="Password" required>
+                        <button type="submit">Register</button>
+                    </form>
+                </div>
+            </div>
             <!-- Sign In Modal -->
             <div id="signInModal" class="modal">
                 <div class="modal-content">
                     <span class="close" id="closeSignIn">&times;</span>
                     <h2>Sign In</h2>
                     <form id="signInForm">
+                        {% csrf_token %}
                         <input type="text" id="signInUsername" placeholder="Username" required>
                         <input type="password" id="signInPassword" placeholder="Password" required>
                         <button type="submit">Sign In</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Register Modal -->
-            <div id="registerModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" id="closeRegister">&times;</span>
-                    <h2>Register</h2>
-                    <form id="registerForm">
-                        <input type="text" id="registerUsername" placeholder="Username" required>
-                        <input type="password" id="registerPassword" placeholder="Password" required>
-                        <input type="email" id="registerEmail" placeholder="Email" required>
-                        <button type="submit">Register</button>
                     </form>
                 </div>
             </div>
@@ -76,23 +81,38 @@
             <div class="controls">
                 <button id="sort-button">Sort: A-Z</button>
                 <button id="delete-agent-mode" class="delete-agent-mode-button">Delete Agent</button>
+                <button id="agentsPageButton" onclick="window.location.href='{% url 'create_page' %}'">Create New Agent</button>
             </div>
-            
+            <div class="agents-container"></div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Load agents passed from Django
+                    const agent_list = {{ agents | safe }};
+                    console.log("Loaded agents:", agent_list);
 
-            <!-- Container for dynamically generated agent buttons -->
-            <div class="agents-container">
-                <!-- Default agents -->
-                <!--<a href="/agent_detail/0">
-                    <button class="agent-button">Default Agent 1</button>
-                </a>
-                <a href="/agent_detail/1">
-                    <button class="agent-button">Default Agent 2</button>
-                </a>
-                <a href="/agent_detail/2">
-                    <button class="agent-button">Default Agent 3</button>
-                </a>-->
-                <!-- New agent buttons will be appended here dynamically -->
-            </div>
+                    // Render agents dynamically
+                    const agentsContainer = document.querySelector('.agents-container');
+                    agent_list.forEach(agent => {
+                        const agentElement = `
+                            <div class="agent">
+                                <h3>${agent.name}</h3>
+                                <p>Type: ${agent.type}</p>
+                                <button class="view-details" data-agent-id="${agent.id}">view agent details</button>
+                            </div>
+                        `;
+                        agentsContainer.insertAdjacentHTML('beforeend', agentElement);
+                    });
+
+                    // Attach click event listeners
+                    document.querySelectorAll('.view-details').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const agentId = this.getAttribute('data-agent-id');
+                            console.log(`Redirecting to agent with ID: ${agentId}`);
+                            window.location.href = `/agent_detail/${agentId}/`;
+                        });
+                    });
+                });
+            </script>        
         </div>
     </main>
     <!-- Footer with additional links -->
@@ -105,12 +125,6 @@
             </ul>
         </nav>
     </footer>
-
-    <script type="text/javascript">
-        const agent_list = {{ agents | tojson }};
-        console.log("Loaded agent list:", agent_list); // For debugging
-    </script>
-    
 
     <script src="{% static 'main.js' %}"></script> <!-- Linking to your JavaScript file -->
 </body>

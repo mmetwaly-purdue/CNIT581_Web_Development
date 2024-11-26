@@ -33,8 +33,8 @@ class Agent:
             "date_created": self.date_created,
         }
     
-agent_list = [agent.to_dict() for agent in [
-    Agent("Alias Name Agent", "Type 1", "Description of default agent 1", "Term 1, Term 2", "Structure 1"),
-    Agent("Address Agent", "Type 2", "Description of default agent 2", "Term 3, Term 4", "Structure 2"),
-    Agent("Dates Agent", "Type 3", "Description of default agent 3", "Term 5, Term 6", "Structure 3"),
-]]
+agent_list = [
+    {"id": 1, "name": "Alias Name Agent", "type": "Type 1"},
+    {"id": 2, "name": "Address Agent", "type": "Type 2"},
+    {"id": 3, "name": "Name Agent", "type": "Type 3"},
+]

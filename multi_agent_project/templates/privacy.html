@@ -13,21 +13,16 @@
                 <div class="logo-search-container">
                     <!-- Logo (User Icon) -->
                     <div class="user-logo-container">
-                        <img src="{% static  'media/user-icon-on-transparent-background-free.png' %}" alt="Logo" class="user-logo" id="userLogo">
-                        <!-- Logout Popup -->
-                        <div id="logoutPopup" class="logout-popup">
-                            <p>Are you sure you want to logout?</p>
-                            <button id="confirmLogout">Logout</button>
-                        </div>
+                        {% if request.user.is_authenticated %}
+                            <img src="{% static 'media/user-icon-on-transparent-background-free.png' %}" alt="Logo" class="user-logo" id="userLogo">
+                            <!-- Logout Popup -->
+                            <div id="logoutPopup" class="logout-popup" style="display: none;">
+                                <p>Are you sure you want to logout?</p>
+                                <button id="confirmLogout">Logout</button>
+                            </div>
+                        {% endif %}
                     </div>
 
-                    <!-- Search Bar -->
-                    <div class="search-container">
-                        <input type="text" placeholder="Hinted search text">
-                        <button class="search-button">
-                            <img src="{% static 'media/pngtree-vector-search-icon.jpg' %}" alt="Search Icon">
-                        </button>
-                    </div>
                 </div>
                 <ul class="nav-links">
                     <li><a href="{% url 'home_page' %}">Home</a></li>
@@ -36,10 +31,13 @@
                     <li><a href="{% url 'about_us_page' %}">About Us</a></li>
                     <li><a href="{% url 'workflow_page' %}">Workflow</a></li>
                 </ul>
-                <!-- Sign In and Register Buttons in Header -->
                 <div class="auth-buttons">
-                    <button id="signInBtn">Sign In</button>
-                    <button id="registerBtn">Register</button>
+                    {% if request.user.is_authenticated %}
+                        <p>Hello, {{ request.user.username }}!</p>
+                    {% else %}
+                        <button id="signInBtn">Sign In</button>
+                        <button id="registerBtn">Register</button>
+                    {% endif %}
                 </div>
             </nav>
         </header>
@@ -49,29 +47,31 @@
             <h1>Privacy Policy</h1>
             <p>Effective Date: October 5, 2024</p>
         </header>
+        <!-- Registration and Sign In-->
+        <!-- Register Modal -->
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeRegister">&times;</span>
+                <h2>Register</h2>
+                <form id="registerForm" method="POST">
+                    <input type="text" id="registerFirstName" placeholder="First Name" required>
+                    <input type="text" id="registerLastName" placeholder="Last Name" required>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
         <!-- Sign In Modal -->
         <div id="signInModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeSignIn">&times;</span>
                 <h2>Sign In</h2>
                 <form id="signInForm">
+                    {% csrf_token %}
                     <input type="text" id="signInUsername" placeholder="Username" required>
                     <input type="password" id="signInPassword" placeholder="Password" required>
                     <button type="submit">Sign In</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Register Modal -->
-        <div id="registerModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeRegister">&times;</span>
-                <h2>Register</h2>
-                <form id="registerForm">
-                    <input type="text" id="registerUsername" placeholder="Username" required>
-                    <input type="password" id="registerPassword" placeholder="Password" required>
-                    <input type="email" id="registerEmail" placeholder="Email" required>
-                    <button type="submit">Register</button>
                 </form>
             </div>
         </div>

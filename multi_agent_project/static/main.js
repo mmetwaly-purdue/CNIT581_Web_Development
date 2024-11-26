@@ -1,32 +1,47 @@
 $(document).ready(function () {
-    // This is where your existing button logic and document ready logic starts
-    const storedUsername = localStorage.getItem('username');
     const connections = []; // Store all connections
     const highlights = {};  // Store user highlights
     const agentColors = {}; // Store a consistent color per agent
     let ascending = true; // Variable to track sort order
     let summaryText = "";
-
+ 
+    
+    function getCSRFTokenFromCookie() {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=')) {
+                return cookie.substring('csrftoken='.length, cookie.length);
+            }
+        }
+        console.error('CSRF token not found in cookies.');
+        return null;
+    }
 
     // Function to render agent buttons
     function renderAgentButtons() {
         const agentsContainer = $('.agents-container');
         agentsContainer.empty(); // Clear the container before appending
-
+    
         if (typeof agent_list !== 'undefined' && agent_list.length > 0) {
-            agent_list.forEach((agent, index) => {
+            agent_list.forEach((agent) => {
                 agentsContainer.append(`
-                    <a href="/agent_detail/${index}">
-                        <button class="agent-button">${agent.name}</button>
-                    </a>
+                    <div class="agent">
+                        <h3>${agent.name}</h3>
+                        <p>Type: ${agent.type}</p>
+                        <button class="view-details" data-agent-id="${agent.id}">View Details</button>
+                    </div>
                 `);
             });
         }
     }
-
+    
     // Call the function to display the agents when the page loads
-    renderAgentButtons();
-
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("Calling renderAgentButtons...");
+        renderAgentButtons();
+    });
+    
     // Handle sorting when button is clicked
     $('#sort-button').on('click', function () {
         // Toggle between ascending and descending
@@ -55,6 +70,7 @@ $(document).ready(function () {
             `);
         });
     });
+   
     
     // Handle adding a connection
     $('#addConnectionButton').on('click', function () {
@@ -78,7 +94,7 @@ $(document).ready(function () {
     // Store connection function
     function storeConnection(buttonPressed, connectionText) {
         $.ajax({
-            url: '/store_connection',
+            url: '/store_connection/',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -135,7 +151,7 @@ $(document).ready(function () {
         console.log('Summary button clicked');
         // Fetch the summary from the backend
         $.ajax({
-            url: '/get_summary',
+            url: '/get_summary/',
             method: 'GET',
             success: function (response) {
                 // Display the summary in the new summary text area
@@ -150,77 +166,39 @@ $(document).ready(function () {
         });
     });
 
-
-
     //---------------------------------------------------------------------------------------//
-    if (storedUsername) {
-        $('.auth-buttons').html(`<p>Hello, ${storedUsername}!</p>`);
-        $('#userLogo').show();
-        $('.workflow-agent-grid').show();
-    } else {
-        $('#userLogo').hide();
-        $('.workflow-agent-grid').hide();
-    }
-
-    // Show Logout Popup on User Icon Click
-    $('#userLogo').on('click', function () {
-        $('#logoutPopup').toggle();
+    // Open and close modals
+    $('#registerBtn').on('click', function () {
+        $('#registerModal').css('display', 'flex'); 
     });
 
-    // Sign-In & Register Modal Logic
     $('#signInBtn').on('click', function () {
         $('#signInModal').css('display', 'flex');
     });
 
-    $('#registerBtn').on('click', function () {
-        $('#registerModal').css('display', 'flex');
+    $('.close').on('click', function () {
+        $('.modal').css('display', 'none');
     });
 
-    $('#closeSignIn').on('click', function () {
-        $('#signInModal').css('display', 'none');
-    });
-
-    $('#closeRegister').on('click', function () {
-        $('#registerModal').css('display', 'none');
-    });
-
-    //---------------------------------------------------------------------------------------//
-    $(window).on('click', function (event) {
-        if (event.target === document.getElementById('signInModal')) {
-            $('#signInModal').css('display', 'none');
-        }
-        if (event.target === document.getElementById('registerModal')) {
-            $('#registerModal').css('display', 'none');
-        }
-    });
-
-    //---------------------------------------------------------------------------------------//
     // Handle Register Form Submission
     $('#registerForm').on('submit', function (event) {
         event.preventDefault();
-        const username = $('#registerUsername').val();
-        const password = $('#registerPassword').val();
+        const first_name = $('#registerFirstName').val();
+        const last_name = $('#registerLastName').val();
         const email = $('#registerEmail').val();
-
+        const password = $('#registerPassword').val();
+    
         $.ajax({
-            url: '/register',
+            url: '/register/',
             method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
             contentType: 'application/json',
-            data: JSON.stringify({ username, password, email }),
+            data: JSON.stringify({ first_name, last_name, email, password }),
             success: function (response) {
-                if (response.message === "User registered successfully") {
-                    alert("Registration successful!");
-                    $('#registerModal').css('display', 'none');
-                    localStorage.setItem('username', username);
-                    $('.auth-buttons').html(`<p>Hello, ${username}!</p>`);
-                    $('#userLogo').show();
-                    $('.workflow-agent-grid').show();
-                } else {
-                    alert(response.message);
-                }
+                alert(response.message);
+                $('#registerModal').css('display', 'none');
             },
             error: function (error) {
-                console.error('Error:', error);
                 alert('Failed to register. Please try again.');
             }
         });
@@ -229,29 +207,30 @@ $(document).ready(function () {
     // Handle Sign-In Form Submission
     $('#signInForm').on('submit', function (event) {
         event.preventDefault();
-        const username = $('#signInUsername').val();
+        const username = $('#signInUsername').val(); // Using email as username
         const password = $('#signInPassword').val();
 
         $.ajax({
-            url: '/signin',
+            url: '/signin/',
             method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
             contentType: 'application/json',
             data: JSON.stringify({ username, password }),
             success: function (response) {
-                if (response.message === "Signed in successfully") {
-                    alert("Sign in successful!");
-                    $('#signInModal').css('display', 'none');
-                    localStorage.setItem('username', username);
-                    $('.auth-buttons').html(`<p>Hello, ${username}!</p>`);
-                    $('#userLogo').show();
-                    $('.workflow-agent-grid').show();
-                } else {
-                    alert("Invalid username or password");
-                }
+                $('#signInModal').css('display', 'none'); // Hide the modal
+
+                // Dynamically update the navigation bar
+                $('.auth-buttons').html(`
+                    <p>Hello, ${response.username}!</p>
+                `);
+
+                // Show user-specific content (like the workflow grid)
+                $('#userLogo').show();
+                $('.workflow-agent-grid').show();
+                location.reload(); 
             },
             error: function (error) {
-                console.error('Error:', error);
-                alert('Failed to sign in. Please try again.');
+                alert('Sign-in failed. Please check your credentials.');
             }
         });
     });
@@ -428,23 +407,23 @@ $(document).ready(function () {
     });
 
     // Function to save highlights for the session and update the summary
-function saveHighlight(agentName, start, end, color) {
-    if (!highlights[agentName]) {
-        highlights[agentName] = [];
+    function saveHighlight(agentName, start, end, color) {
+        if (!highlights[agentName]) {
+            highlights[agentName] = [];
+        }
+
+        // Save the highlight into the highlights object
+        highlights[agentName].push({ start, end, color });
+
+        // Log to ensure the highlight is being saved
+        console.log(`Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}`);
+
+        // Automatically update the summaryText with the new highlight
+        summaryText += `Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}\n`;
+
+        // Log to ensure summaryText is being updated
+        console.log("Updated summary text: ", summaryText);
     }
-
-    // Save the highlight into the highlights object
-    highlights[agentName].push({ start, end, color });
-
-    // Log to ensure the highlight is being saved
-    console.log(`Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}`);
-
-    // Automatically update the summaryText with the new highlight
-    summaryText += `Highlight saved for agent ${agentName}: Start ${start}, End ${end}, Color ${color}\n`;
-
-    // Log to ensure summaryText is being updated
-    console.log("Updated summary text: ", summaryText);
-}
 
 
     //---------------------------------------------------------------------------------------//
@@ -482,7 +461,7 @@ function saveHighlight(agentName, start, end, color) {
 
         // Send the data to the server via POST request
         $.ajax({
-            url: '/create_agent',
+            url: '/create_agent/',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(newAgent),
@@ -531,6 +510,25 @@ function saveHighlight(agentName, start, end, color) {
 
     //---------------------------------------------------------------------------------------//
 
+    $('#upload-form').on('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+    
+        $.ajax({
+            url: '/upload_document/',
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (response) {
+                alert('File uploaded successfully!');
+            },
+            error: function (error) {
+                alert('Failed to upload the file.');
+            }
+        });
+    });
     // Function to load document content into an agent box
     function loadDocumentContent(agentId, filePath) {
         $.get(filePath, function (data) {
@@ -539,16 +537,31 @@ function saveHighlight(agentName, start, end, color) {
     }
 
     //---------------------------------------------------------------------------------------//
+    // Handle Logout Popup
+    $('#userLogo').on('click', function () {
+        $('#logoutPopup').toggle(); // Toggle visibility of the logout popup
+    });
 
-    // Logout clears localStorage and hides workflow content
+    // Confirm Logout
     $('#confirmLogout').on('click', function () {
-        localStorage.removeItem('username');
-        $('.auth-buttons').html(`
-            <button id="signInBtn">Sign In</button>
-            <button id="registerBtn">Register</button>
-        `);
-        $('#logoutPopup').hide();
-        $('#userLogo').hide();
-        $('.workflow-agent-grid').hide();
+        $.ajax({
+            url: '/logout/',
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
+            success: function () {
+                location.reload(); // Reload to reflect the logged-out state
+            },
+            error: function (error) {
+                console.error('Logout failed:', error);
+                alert('Failed to log out. Please try again.');
+            }
+        });
+    });
+
+    // Close the logout popup when clicking outside of it
+    $(window).on('click', function (event) {
+        if (!$(event.target).closest('#userLogo, #logoutPopup').length) {
+            $('#logoutPopup').hide();
+        }
     });
 });
