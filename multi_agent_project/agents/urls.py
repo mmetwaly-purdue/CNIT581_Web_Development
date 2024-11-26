@@ -21,6 +21,8 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('signin/', views.signin, name='signin'),
     path('store_connection/', store_connection, name='store_connection'),
+    path('delete_agent_workflow/', views.delete_agent_workflow, name='delete_agent_workflow'),
+    path('get_connections/', views.get_connections, name='get_connections'),
     path('logout/', views.logout_view, name='logout'),
     path('<path:path>', debug_catch_all),  # Catch all other paths
 ]

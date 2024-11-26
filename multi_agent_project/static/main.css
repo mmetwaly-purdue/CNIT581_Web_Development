@@ -225,6 +225,12 @@ button:hover {
     color: #333;
 }
 
+.non-editable {
+    border: none;
+    background-color: transparent;
+    font-weight: bold;
+    cursor: not-allowed;
+}
 /* Filter Buttons Container */
 .filter-buttons {
     display: flex;

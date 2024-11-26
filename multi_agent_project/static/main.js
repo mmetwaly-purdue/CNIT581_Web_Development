@@ -50,32 +50,85 @@ $(document).ready(function () {
     });
    
     
-    // Handle adding a connection
+    // Dynamically populate dropdown
+    function updateConnectionsDropdown() {
+        const dropdown = $('#connectionsDropdown');
+        dropdown.empty(); // Clear existing options
+        dropdown.append('<option value="">--Select Connection--</option>');
+        connections.forEach((connection, index) => {
+            dropdown.append(`<option value="${index}">${connection.agent1Text} AND ${connection.agent2Text}</option>`);
+        });
+    }
+
+    // Add Connection
     $('#addConnectionButton').on('click', function () {
-        const connectionInput = $('#workflow-textarea').val();
-        storeConnection('Add Connection', connectionInput);
+        const agent1 = $('#agent1').val();
+        const agent2 = $('#agent2').val();
+
+        if (!agent1 || !agent2) {
+            alert('Please select both agents to create a connection.');
+            return;
+        }
+
+        const connection = { agent1Text: agent1, agent2Text: agent2 };
+        connections.push(connection); // Add to the global list
+        updateConnectionsDropdown(); // Refresh dropdown
+
+        alert('Connection added successfully.');
     });
 
-        // Handle deleting a connection (similar to adding)
+    // Delete Connection
     $('#deleteConnectionButton').on('click', function () {
-        const connectionInput = $('#workflow-textarea').val(); // Assuming it's from the same textarea
-        storeConnection('Delete Connection', connectionInput);
+        const selectedIndex = $('#connectionsDropdown').val();
+        if (selectedIndex === "") {
+            alert('Please select a connection to delete.');
+            return;
+        }
+
+        connections.splice(selectedIndex, 1); // Remove selected connection
+        updateConnectionsDropdown(); // Refresh dropdown
+        alert('Connection deleted successfully.');
     });
 
-    // Store connection function
+    // Highlight Connection
+    $('#highlightConnectionButton').on('click', function () {
+        const selectedIndex = $('#connectionsDropdown').val();
+        if (selectedIndex === "") {
+            alert('Please select a connection to highlight.');
+            return;
+        }
+
+        const connection = connections[selectedIndex];
+        console.log(`Highlighting connection: ${connection.agent1Text} AND ${connection.agent2Text}`);
+        alert('Connection highlighted successfully.');
+    });
+
+    // Hide Connection
+    $('#hideConnectionButton').on('click', function () {
+        const selectedIndex = $('#connectionsDropdown').val();
+        if (selectedIndex === "") {
+            alert('Please select a connection to hide.');
+            return;
+        }
+
+        const connection = connections[selectedIndex];
+        console.log(`Hiding connection: ${connection.agent1Text} AND ${connection.agent2Text}`);
+        alert('Connection hidden successfully.');
+    });
+    
     function storeConnection(buttonPressed, connectionText) {
         $.ajax({
             url: '/store_connection/',
             method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
             contentType: 'application/json',
             data: JSON.stringify({
                 button: buttonPressed,
                 connection_text: connectionText
             }),
             success: function (response) {
-                console.log(response.message);
-                // Clear the input field after storing the connection
-                $('#workflow-textarea').val('');
+                alert(response.message);
+                $('#agent1, #agent2').prop('selectedIndex', 0); // Reset dropdowns
             },
             error: function (error) {
                 console.error('Error:', error);
@@ -120,6 +173,26 @@ $(document).ready(function () {
         });
     });
     
+    $('#delete-agent-button').on('click', function () {
+        const selectedAgent = $('#delete-agent-dropdown').val();
+    
+        if (!selectedAgent) {
+            alert('Please select an agent to delete.');
+            return;
+        }
+    
+        // Find and remove the agent box
+        const agentBox = Array.from(document.querySelectorAll('.workflow-agent-box'))
+            .find(box => box.querySelector('h4').textContent.startsWith(selectedAgent));
+    
+        if (agentBox) {
+            agentBox.remove(); // Remove the agent box from the DOM
+            alert(`Agent "${selectedAgent}" deleted successfully.`);
+            $('#delete-agent-dropdown').prop('selectedIndex', 0); // Reset the dropdown
+        } else {
+            alert(`Agent "${selectedAgent}" not found.`);
+        }
+    });
 
     // New logic for displaying the summary of all connections
     $('#summaryButton').on('click', function () {

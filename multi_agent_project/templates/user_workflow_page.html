@@ -73,25 +73,49 @@
                 </form>
             </div>
         </div>
-        <!-- Button Section -->
-        <div class="workflow-button-container">
-            <button id="addConnectionButton" class="workflow-action-button">Add Connection</button>
-            <button id="deleteConnectionButton" class="workflow-action-button">Delete Connection</button>
-            <button id="highlightConnectionButton" class="workflow-action-button">Highlight Connection</button>
-            <button id="deleteAgentButton" class="workflow-action-button">Delete Agent</button>
-            <button id="hideConnectionButton" class="workflow-action-button">Hide Connection</button>
-            <button id="summaryButton" class="workflow-action-button">Summary</button> 
+        <!-- Right-side section for connections -->
+        <div class="workflow-right-side-container">
+            <h3>Specify Connections to Explore</h3>
+            <select id="agent1" class="agent-dropdown">
+                <option value="" disabled selected>Select Agent 1</option>
+                {% for agent in documents %}
+                <option value="{{ agent.agent_name }}">{{ agent.agent_name }}</option>
+                {% endfor %}
+            </select>
+            <select id="agent2" class="agent-dropdown">
+                <option value="" disabled selected>Select Agent 2</option>
+                {% for agent in documents %}
+                <option value="{{ agent.agent_name }}">{{ agent.agent_name }}</option>
+                {% endfor %}
+            </select>
+            <h3>Delete an Agent</h3>
+            <select id="delete-agent-dropdown" class="agent-dropdown">
+                <option value="" disabled selected>Select an Agent to Delete</option>
+                {% for doc in documents %}
+                <option value="{{ doc.agent_name }}">{{ doc.agent_name }}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="connectionsDropdown">Select Connection:</label>
+            <select id="connectionsDropdown">
+                <option value="">--Select Connection--</option>
+                <!-- Options will be dynamically populated -->
+            </select>
         </div>
-        
-    
+        <button id="addConnectionButton" class="workflow-action-button">Add Connection</button>
+        <button id="delete-agent-button" class="workflow-action-button">Delete Agent</button>
+        <button id="deleteConnectionButton" class="workflow-action-button">Delete Connection</button>
+        <button id="highlightConnectionButton" class="workflow-action-button">Highlight Connection</button>
+        <button id="hideConnectionButton" class="workflow-action-button">Hide Connection</button>
+        <button id="summaryButton" class="workflow-action-button">Summary</button> 
         <!-- Agents Section (Grid Layout) -->
         <!-- Workflow Agent Boxes with placeholders for document content -->
         <div class="workflow-agent-grid">
             {% if logged_in %}
                 {% for doc in documents %}
                     <div class="workflow-agent-box">
-                        <h4>{{ doc.agent_name }} - {{ doc.doc_name }}</h4>
-                        <div class="document-content">
+                        <h4 class="non-editable">{{ doc.agent_name }} - {{ doc.doc_name }}</h4>
+                        <div class="document-content non-editable">
                             {{ doc.doc_content }}
                         </div>
                     </div>
@@ -102,23 +126,7 @@
         </div>
 
     
-        <!-- Right-side section (Connections Form) -->
-        <div class="workflow-right-side-container">
-            <h3>Specify Connections to Explore</h3>
-            <textarea id="workflow-textarea" placeholder="Example: Agent 1 AND Agent 2" rows="4"></textarea>
-        </div>
 
-        <!-- New summary text area -->
-        <div class="workflow-right-side-container">
-            <h3>Summary of Connections and Highlights</h3>
-            <div class="filter-buttons">
-                <button id="filterConnections">Show Only Connections</button>
-                <button id="filterHighlights">Show Only Highlights</button>
-                <input type="text" id="filterAgentInput" placeholder="Enter Agent Name" />
-                <button id="filterAgent">Filter by Agent</button>
-            </div>
-            <textarea id="summary-textarea" placeholder="Summary of all connections and highlights will appear here" rows="8" readonly></textarea>
-        </div>
 
         <!-- Delete Agent Modal -->
         <div id="deleteAgentModal" class="modal">

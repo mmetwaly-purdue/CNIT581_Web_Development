@@ -169,21 +169,38 @@ def logout_view(request):
 all_connections = []
 
 @csrf_exempt
+def delete_agent_workflow(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            agent_name = data.get('agent_name')
+
+            # Find and delete the agent in the database
+            global agent_list
+            agent_list = [agent for agent in agent_list if agent["name"] != agent_name]
+
+            return JsonResponse({"message": f"Agent '{agent_name}' deleted successfully."}, status=200)
+        except Exception as e:
+            return JsonResponse({"message": f"Error deleting agent: {str(e)}"}, status=500)
+
+    return JsonResponse({"message": "Invalid request method."}, status=405)
+
+@csrf_exempt
 def store_connection(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            button_pressed = data.get('button')
+            connection_text = data.get('connection_text')
+
+            if button_pressed and connection_text:
+                all_connections.append(connection_text)  # Store in memory (adjust for database if needed)
+                return JsonResponse({"message": "Connection stored successfully."}, status=200)
+            else:
+                return JsonResponse({"message": "Invalid data."}, status=400)
         except json.JSONDecodeError:
-            return JsonResponse({"message": "No data received"}, status=400)
+            return JsonResponse({"message": "Invalid JSON format."}, status=400)
+    return JsonResponse({"message": "Invalid request method."}, status=405)
 
-        button_pressed = data.get('button')
-        connection_text = data.get('connection_text')
-
-        if button_pressed and connection_text:
-            formatted_connection = f"{button_pressed} - {connection_text}\n"
-            all_connections.append(formatted_connection)
-            return JsonResponse({"message": "Connection stored successfully"}, status=200)
-        else:
-            return JsonResponse({"message": "Invalid data"}, status=400)
-    else:
-        return JsonResponse({"message": "Invalid request method"}, status=405)
+def get_connections(request):
+    return JsonResponse({"connections": all_connections}, status=200)
