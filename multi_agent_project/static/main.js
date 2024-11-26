@@ -42,33 +42,11 @@ $(document).ready(function () {
         renderAgentButtons();
     });
     
-    // Handle sorting when button is clicked
+    // Handle sorting
     $('#sort-button').on('click', function () {
-        // Toggle between ascending and descending
-        ascending = !ascending;
-
-        // Sort the agent list based on the current sort order
-        if (ascending) {
-            agent_list.sort((a, b) => a.name.localeCompare(b.name)); // A-Z
-            $(this).text('Sort: A-Z');
-        } else {
-            agent_list.sort((a, b) => b.name.localeCompare(a.name)); // Z-A
-            $(this).text('Sort: Z-A');
-        }
-
-        // Re-render the agent buttons after sorting
-        renderAgentButtons();
-
-        // Clear existing agent buttons and repopulate them after sorting
-        const agentsContainer = $('.agents-container');
-        agentsContainer.empty();
-        agent_list.forEach((agent, index) => {
-            agentsContainer.append(`
-                <a href="/agent_detail/${index}">
-                    <button class="agent-button">${agent.name}</button>
-                </a>
-            `);
-        });
+        const currentOrder = $(this).data('sort-order'); // Get current sort order
+        const newOrder = currentOrder === 'asc' ? 'desc' : 'asc'; // Toggle sort order
+        window.location.href = `/agents/?sort=${newOrder}`; // Reload page with new sort order
     });
    
     
@@ -82,13 +60,6 @@ $(document).ready(function () {
     $('#deleteConnectionButton').on('click', function () {
         const connectionInput = $('#workflow-textarea').val(); // Assuming it's from the same textarea
         storeConnection('Delete Connection', connectionInput);
-    });
-
-
-
-    // Delete agent logic (when "Delete Agent" mode is enabled)
-    $('#delete-agent-mode').on('click', function () {
-        deleteAgentMode(); // Call the function to delete agents
     });
 
     // Store connection function
@@ -113,28 +84,42 @@ $(document).ready(function () {
         });
     }
 
-    // Function to delete agent from the list based on name
-    function deleteAgentMode() {
-        const agentName = prompt("Enter the name of the agent you want to delete:");
-
-        if (agentName !== null && agentName.trim() !== '') {
-            // Find the index of the agent with the specified name
-            const agentIndex = agent_list.findIndex(agent => agent.name.toLowerCase() === agentName.trim().toLowerCase());
-
-            if (agentIndex !== -1) {
-                // Remove the agent from agent_list
-                agent_list.splice(agentIndex, 1);
-                alert(`Agent "${agentName}" deleted successfully!`);
-                
-                // Re-render the agent buttons after deletion
-                renderAgentButtons();
-            } else {
-                alert(`Agent "${agentName}" not found.`);
-            }
-        } else {
-            alert('Please enter a valid agent name.');
+    // Handle deletion
+    $('#delete-agent-mode').on('click', function () {
+        const agentName = prompt("Enter the name of the agent to delete:");
+        if (!agentName) {
+            alert("No agent name provided.");
+            return;
         }
-    }
+
+        // Find the agent to delete
+        const agentToDelete = Array.from(document.querySelectorAll('.agent h3'))
+            .find(h3 => h3.textContent.toLowerCase() === agentName.toLowerCase());
+
+        if (!agentToDelete) {
+            alert("Agent not found.");
+            return;
+        }
+
+        const agentId = agentToDelete.closest('.agent').querySelector('.view-details').dataset.agentId;
+
+        // Send request to delete agent
+        $.ajax({
+            url: '/delete_agent/',
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
+            contentType: 'application/json',
+            data: JSON.stringify({ agent_id: parseInt(agentId) }),
+            success: function (response) {
+                alert(response.message);
+                window.location.reload(); // Reload page after deletion
+            },
+            error: function () {
+                alert('Failed to delete agent.');
+            }
+        });
+    });
+    
 
     // New logic for displaying the summary of all connections
     $('#summaryButton').on('click', function () {

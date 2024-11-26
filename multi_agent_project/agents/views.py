@@ -36,9 +36,9 @@ def workflow_page(request):
     return render(request, 'user_workflow_page.html', {'documents': documents, 'logged_in': True})
 
 def agents_page(request):
-    # Serialize agents as JSON
-    agents_json = mark_safe(json.dumps(agent_list))  # Escapes and marks as safe for the template
-    return render(request, 'agents_page.html', {'agents': agents_json})
+    sort_order = request.GET.get('sort', 'asc')  # Default sorting order is ascending
+    sorted_agents = sorted(agent_list, key=lambda x: x['name'], reverse=(sort_order == 'desc'))
+    return render(request, 'agents_page.html', {'agents': sorted_agents, 'sort_order': sort_order})
 
 def agent_detail(request, agent_id):
     try:
@@ -76,13 +76,21 @@ def create_agent(request):
 
         return JsonResponse({"message": "Agent created successfully"}, status=201)
 
-def delete_agent(request, agent_id):
-    if request.method == 'DELETE':
+@csrf_exempt
+def delete_agent(request):
+    if request.method == 'POST':
         try:
-            agent_list.pop(agent_id)
-            return JsonResponse({"message": "Agent deleted successfully"}, status=200)
-        except IndexError:
-            return JsonResponse({"message": "Agent not found"}, status=404)
+            data = json.loads(request.body)
+            agent_id = data.get('agent_id')
+
+            # Find and delete agent by ID
+            global agent_list
+            agent_list = [agent for agent in agent_list if agent['id'] != agent_id]
+
+            return JsonResponse({"message": "Agent deleted successfully."}, status=200)
+        except Exception as e:
+            return JsonResponse({"message": f"Error deleting agent: {str(e)}"}, status=500)
+    return JsonResponse({"message": "Invalid request method."}, status=405)
 
 def upload_document(request):
     if request.method == 'POST' and request.FILES.get('file'):

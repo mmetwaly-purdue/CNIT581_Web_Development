@@ -79,8 +79,14 @@
             <p>Explore agents that help make sense of complex data through collaboration and analysis.</p>
 
             <div class="controls">
-                <button id="sort-button">Sort: A-Z</button>
-                <button id="delete-agent-mode" class="delete-agent-mode-button">Delete Agent</button>
+                <button id="sort-button" data-sort-order="{{ sort_order }}">
+                    {% if sort_order == 'asc' %}
+                        Sort: Z-A
+                    {% else %}
+                        Sort: A-Z
+                    {% endif %}
+                </button>
+                <button id="delete-agent-mode">Delete Agent</button>
                 <button id="agentsPageButton" onclick="window.location.href='{% url 'create_page' %}'">Create New Agent</button>
             </div>
             <div class="agents-container"></div>
