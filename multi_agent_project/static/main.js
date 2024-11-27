@@ -51,12 +51,39 @@ $(document).ready(function () {
    
     
     // Dynamically populate dropdown
+    // Function to dynamically populate agent dropdowns
+    function updateAgentDropdowns() {
+        const agentDropdowns = ['#agent1', '#agent2', '#delete-agent-dropdown'];
+        agentDropdowns.forEach(selector => {
+            const dropdown = $(selector);
+            dropdown.empty();
+            dropdown.append('<option value="" disabled selected>Select an Agent</option>');
+            $('.workflow-agent-box').each(function () {
+                const agentName = $(this).find('h4').text();
+                dropdown.append(`<option value="${agentName}">${agentName}</option>`);
+            });
+        });
+    }
+
+    // Function to update connections dropdown
     function updateConnectionsDropdown() {
         const dropdown = $('#connectionsDropdown');
-        dropdown.empty(); // Clear existing options
-        dropdown.append('<option value="">--Select Connection--</option>');
+        dropdown.empty();
+        dropdown.append('<option value="" disabled selected>--Select Connection--</option>');
         connections.forEach((connection, index) => {
             dropdown.append(`<option value="${index}">${connection.agent1Text} AND ${connection.agent2Text}</option>`);
+        });
+    }
+
+    // Function to redraw connection lines
+    function redrawConnections() {
+        connections.forEach(connection => {
+            const { line, agent1Text, agent2Text } = connection;
+            const agentBox1 = $(`.workflow-agent-box:contains("${agent1Text}")`).first();
+            const agentBox2 = $(`.workflow-agent-box:contains("${agent2Text}")`).first();
+            if (agentBox1.length && agentBox2.length) {
+                drawLine(line, agentBox1, agentBox2);
+            }
         });
     }
 
@@ -70,25 +97,38 @@ $(document).ready(function () {
             return;
         }
 
-        const connection = { agent1Text: agent1, agent2Text: agent2 };
-        connections.push(connection); // Add to the global list
-        updateConnectionsDropdown(); // Refresh dropdown
-
+        const connection = { agent1Text: agent1, agent2Text: agent2, line: $('<div class="connection-line"></div>') };
+        connections.push(connection);
+        $('body').append(connection.line);
+        redrawConnections();
+        updateConnectionsDropdown();
         alert('Connection added successfully.');
     });
 
     // Delete Connection
     $('#deleteConnectionButton').on('click', function () {
         const selectedIndex = $('#connectionsDropdown').val();
-        if (selectedIndex === "") {
+        if (!selectedIndex) {
             alert('Please select a connection to delete.');
             return;
         }
 
-        connections.splice(selectedIndex, 1); // Remove selected connection
-        updateConnectionsDropdown(); // Refresh dropdown
+        const connection = connections[selectedIndex];
+        connection.line.remove();
+        connections.splice(selectedIndex, 1);
+        updateConnectionsDropdown();
+        redrawConnections();
         alert('Connection deleted successfully.');
     });
+
+    // Update agent dropdowns on page load and agent changes
+    document.addEventListener('DOMContentLoaded', function () {
+        updateAgentDropdowns();
+        updateConnectionsDropdown();
+    });
+
+    // Redraw connections on window resize to handle layout changes
+    $(window).on('resize', redrawConnections);
 
     // Highlight Connection
     $('#highlightConnectionButton').on('click', function () {
@@ -115,7 +155,7 @@ $(document).ready(function () {
         console.log(`Hiding connection: ${connection.agent1Text} AND ${connection.agent2Text}`);
         alert('Connection hidden successfully.');
     });
-    
+
     function storeConnection(buttonPressed, connectionText) {
         $.ajax({
             url: '/store_connection/',
@@ -188,7 +228,8 @@ $(document).ready(function () {
         if (agentBox) {
             agentBox.remove(); // Remove the agent box from the DOM
             alert(`Agent "${selectedAgent}" deleted successfully.`);
-            $('#delete-agent-dropdown').prop('selectedIndex', 0); // Reset the dropdown
+            $('#delete-agent-dropdown').val(""); 
+            updateAgentDropdowns();// Reset the dropdown
         } else {
             alert(`Agent "${selectedAgent}" not found.`);
         }
@@ -224,6 +265,20 @@ $(document).ready(function () {
         });
     });
 
+    //---------------------------------------------------------------------------------------//
+    //Documents Page Javascript code
+    $(document).on('click', '.document-button', function () {
+        const documentItem = $(this).closest('.document-item');
+        const contentContainer = documentItem.find('.document-content');
+    
+        // Toggle visibility
+        if (contentContainer.hasClass('hidden')) {
+            $('.document-content').addClass('hidden'); // Hide all other content containers
+            contentContainer.removeClass('hidden').text($(this).data('doc')); // Show current container with text
+        } else {
+            contentContainer.addClass('hidden'); // Hide the container if already visible
+        }
+    });
     //---------------------------------------------------------------------------------------//
     // Open and close modals
     $('#registerBtn').on('click', function () {
@@ -568,10 +623,24 @@ $(document).ready(function () {
 
     //---------------------------------------------------------------------------------------//
 
+    // Function to dynamically update document dropdown
+    function updateDocumentDropdown() {
+        const dropdown = $('#document-dropdown');
+        dropdown.empty();
+        dropdown.append('<option value="" disabled selected>Select a Document</option>');
+        
+        $.get('/get_documents/', function (response) {
+            response.documents.forEach(doc => {
+                dropdown.append(`<option value="${doc.name}">${doc.name}</option>`);
+            });
+        });
+    }
+
+    // Handle upload form submission
     $('#upload-form').on('submit', function (event) {
         event.preventDefault();
         const formData = new FormData(this);
-    
+
         $.ajax({
             url: '/upload_document/',
             method: 'POST',
@@ -580,17 +649,51 @@ $(document).ready(function () {
             contentType: false,
             data: formData,
             success: function (response) {
-                alert('File uploaded successfully!');
+                alert('Document uploaded successfully!');
+                updateDocumentDropdown(); // Update document list dynamically
             },
             error: function (error) {
-                alert('Failed to upload the file.');
+                alert('Failed to upload the document.');
+            }
+        });
+    });
+
+    $('#run-agent-button').on('click', function () {
+        const selectedDocument = $('#document-dropdown').val();
+        const agentName = '{{ agent.name }}'; // Pass agent name dynamically from the server
+        const agentId = '{{ agent.id }}'; // Assuming each agent has a unique ID
+    
+        if (!selectedDocument) {
+            alert('Please select a document to run the agent.');
+            return;
+        }
+    
+        // Simulate running the agent with the document
+        $.ajax({
+            url: '/run_agent/',
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
+            contentType: 'application/json',
+            data: JSON.stringify({ agent: agentName, document: selectedDocument }),
+            success: function (response) {
+                alert(`Agent "${agentName}" ran successfully on document "${selectedDocument}".`);
+                // Load the document content into the agent box
+                window.location.href = '/workflow/';
+                loadDocumentContent(agentId, selectedDocument);
+                location.reload();
+            },
+            error: function (error) {
+                alert('Failed to run the agent.');
             }
         });
     });
     // Function to load document content into an agent box
-    function loadDocumentContent(agentId, filePath) {
+    function loadDocumentContent(agentId, documentName) {
+        const filePath = `/static/uploads/${documentName}`; // Adjust the path to match where your documents are stored
         $.get(filePath, function (data) {
-            $(`#${agentId} .document-content`).text(data);
+            $(`#${agentId} .document-content`).text(data); // Load content into the appropriate agent box
+        }).fail(function () {
+            alert('Failed to load document content.');
         });
     }
 

@@ -30,7 +30,7 @@
         <ul class="nav-links">
             <li><a href="{% url 'home_page' %}">Home</a></li>
             <li><a href="{% url 'agents_page' %}">Agents</a></li>
-            <li><a href="{% url 'create_page' %}">Create</a></li>
+            <li><a href="{% url 'documents_page' %}">Documents</a></li>
             <li><a href="{% url 'about_us_page' %}">About Us</a></li>
             <li><a href="{% url 'workflow_page' %}">Workflow</a></li>
         </ul>
@@ -106,13 +106,22 @@
                         <textarea readonly>Example Output structure</textarea>
                     </div>
 
-                    <!-- File Upload Form -->
-                    <form id="upload-form" action="{% url 'upload_document' %}" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <input type="hidden" name="agent_name" value="{{ agent.name }}">
-                        <input type="file" id="file" name="file" required>
-                        <button type="submit">Upload Document</button>
-                    </form>
+                    <div id="run-agent-section">
+                        <h3>Use Agent on an Existing Document</h3>
+                        <select id="document-dropdown" class="agent-dropdown">
+                            <option value="" disabled selected>Select a Document</option>
+                            {% for document in documents %}
+                            <option value="{{ document.name }}">{{ document.name }}</option>
+                            {% endfor %}
+                        </select>               
+                        <h4>Or Upload a New Document</h4>
+                        <form id="upload-form" enctype="multipart/form-data">
+                            <input type="file" name="file" id="file-input" required>
+                            <input type="hidden" name="agent_name" value="{{ agent.name }}">
+                            <button type="submit">Upload Document</button>
+                        </form>
+                        <button id="run-agent-button">Run Agent</button>
+                    </div>
                     
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {

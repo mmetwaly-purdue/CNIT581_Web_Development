@@ -27,7 +27,7 @@
                 <ul class="nav-links">
                     <li><a href="{% url 'home_page' %}">Home</a></li>
                     <li><a href="{% url 'agents_page' %}">Agents</a></li>
-                    <li><a href="{% url 'create_page' %}">Create</a></li>
+                    <li><a href="{% url 'documents_page' %}">Documents</a></li>
                     <li><a href="{% url 'about_us_page' %}">About Us</a></li>
                     <li><a href="{% url 'workflow_page' %}">Workflow</a></li>
                 </ul>
@@ -75,38 +75,40 @@
         </div>
         <!-- Right-side section for connections -->
         <div class="workflow-right-side-container">
-            <h3>Specify Connections to Explore</h3>
+            <h3>Specify Agent Outputs to Connect</h3>
             <select id="agent1" class="agent-dropdown">
                 <option value="" disabled selected>Select Agent 1</option>
-                {% for agent in documents %}
-                <option value="{{ agent.agent_name }}">{{ agent.agent_name }}</option>
+                {% for doc in documents %}
+                <option value="{{ doc.agent_name }}">{{ doc.agent_name }} - {{ doc.doc_name }}</option>
                 {% endfor %}
             </select>
             <select id="agent2" class="agent-dropdown">
                 <option value="" disabled selected>Select Agent 2</option>
-                {% for agent in documents %}
-                <option value="{{ agent.agent_name }}">{{ agent.agent_name }}</option>
+                {% for doc in documents %}
+                <option value="{{ doc.agent_name }}">{{ doc.agent_name }} - {{ doc.doc_name }}</option>
                 {% endfor %}
             </select>
-            <h3>Delete an Agent</h3>
+            <button id="addConnectionButton" class="workflow-action-button">Add Connection</button>
+            <h3>Delete an Agent Output</h3>
             <select id="delete-agent-dropdown" class="agent-dropdown">
                 <option value="" disabled selected>Select an Agent to Delete</option>
                 {% for doc in documents %}
-                <option value="{{ doc.agent_name }}">{{ doc.agent_name }}</option>
+                <option value="{{ doc.agent_name }}">{{ doc.agent_name }} - {{ doc.doc_name }}</option>
                 {% endfor %}
             </select>
-            
-            <label for="connectionsDropdown">Select Connection:</label>
-            <select id="connectionsDropdown">
+            <button id="delete-agent-button" class="workflow-action-button">Delete Agent</button>
+            <h3>Select Connection to Perform Actions On</h3>
+            <select id="connectionsDropdown" class="agent-dropdown">
                 <option value="">--Select Connection--</option>
                 <!-- Options will be dynamically populated -->
             </select>
+            <button id="deleteConnectionButton" class="workflow-action-button">Delete Connection</button>
+            <button id="highlightConnectionButton" class="workflow-action-button">Highlight Connection</button>
+            <button id="hideConnectionButton" class="workflow-action-button">Hide Connection</button>
         </div>
-        <button id="addConnectionButton" class="workflow-action-button">Add Connection</button>
-        <button id="delete-agent-button" class="workflow-action-button">Delete Agent</button>
-        <button id="deleteConnectionButton" class="workflow-action-button">Delete Connection</button>
-        <button id="highlightConnectionButton" class="workflow-action-button">Highlight Connection</button>
-        <button id="hideConnectionButton" class="workflow-action-button">Hide Connection</button>
+        
+        
+        
         <button id="summaryButton" class="workflow-action-button">Summary</button> 
         <!-- Agents Section (Grid Layout) -->
         <!-- Workflow Agent Boxes with placeholders for document content -->

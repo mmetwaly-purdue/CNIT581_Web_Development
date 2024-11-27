@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .utils import agent_list, allowed_file, Agent
 from django.utils.safestring import mark_safe
+import os
+from django.conf import settings
 
 User = get_user_model()
 
@@ -29,11 +31,34 @@ def terms_page(request):
 def create_page(request):
     return render(request, 'create.html')
 
+def documents_page(request):
+    # Path to your uploaded documents folder
+    uploads_path = os.path.join(settings.BASE_DIR, 'static/uploads')
+
+    # Collect document names and contents
+    documents = []
+    for filename in os.listdir(uploads_path):
+        with open(os.path.join(uploads_path, filename), 'r') as file:
+            documents.append({
+                'name': filename,
+                'content': file.read()
+            })
+
+    # Handle search query
+    search_query = request.GET.get('search', '').strip().lower()
+    if search_query:
+        documents = [doc for doc in documents if search_query in doc['name'].lower()]
+
+    return render(request, 'documents.html', {'documents': documents, 'search_query': search_query})
+
 @login_required
 def workflow_page(request):
-    user_id = request.user.id
-    documents = Document.objects.filter(user_id=user_id)
-    return render(request, 'user_workflow_page.html', {'documents': documents, 'logged_in': True})
+    # Simulate logged-in state and pass workflow data
+    logged_in = True  # Replace with actual authentication check
+    return render(request, 'user_workflow_page.html', {
+        "logged_in": logged_in,
+        "documents": workflow_data,  # Pass the workflow data to the template
+    })
 
 def agents_page(request):
     sort_order = request.GET.get('sort', 'asc')  # Default sorting order is ascending
@@ -41,12 +66,15 @@ def agents_page(request):
     return render(request, 'agents_page.html', {'agents': sorted_agents, 'sort_order': sort_order})
 
 def agent_detail(request, agent_id):
+    # Fetch documents from the uploads folder
+    uploads_path = os.path.join(settings.BASE_DIR, 'static/uploads')
+    documents = [{'name': f} for f in os.listdir(uploads_path) if os.path.isfile(os.path.join(uploads_path, f))]
     try:
         agent_id = int(agent_id)
         agent = next((agent for agent in agent_list if int(agent['id']) == agent_id), None)
 
         if agent:
-            return render(request, 'agents_detailed_page.html', {'agent': agent})
+            return render(request, 'agents_detailed_page.html', {'agent': agent, 'documents': documents})
         else:
             return HttpResponse("Agent not found", status=404)
     except (ValueError, TypeError):
@@ -92,18 +120,21 @@ def delete_agent(request):
             return JsonResponse({"message": f"Error deleting agent: {str(e)}"}, status=500)
     return JsonResponse({"message": "Invalid request method."}, status=405)
 
+def get_documents(request):
+    uploads_path = os.path.join(settings.BASE_DIR, 'static/uploads')
+    documents = [{'name': f} for f in os.listdir(uploads_path)]
+    return JsonResponse({'documents': documents}, status=200)
+
 def upload_document(request):
     if request.method == 'POST' and request.FILES.get('file'):
         file = request.FILES['file']
-        agent_name = request.POST.get('agent_name')
-        user_id = request.user.id
+        save_path = os.path.join(settings.BASE_DIR, 'static/uploads', file.name)
 
-        # Logic to read and save file content
-        file_content = file.read().decode('utf-8')  # Assuming text files
-        document = Document(agent_name=agent_name, doc_name=file.name, doc_content=file_content, user_id=user_id)
-        document.save()
+        with open(save_path, 'wb') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
 
-        return HttpResponseRedirect(reverse('workflow_page'))
+        return JsonResponse({"message": "Document uploaded successfully."}, status=200)
     else:
         return JsonResponse({"error": "No file uploaded"}, status=400)
                   
@@ -204,3 +235,35 @@ def store_connection(request):
 
 def get_connections(request):
     return JsonResponse({"connections": all_connections}, status=200)
+
+# Example placeholder to store workflow data
+workflow_data = []  # A list to store agent-document associations
+
+@csrf_exempt
+def run_agent(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            agent_name = data.get('agent')
+            document_name = data.get('document')
+
+            if not agent_name or not document_name:
+                return JsonResponse({"error": "Both agent and document are required."}, status=400)
+
+            # Simulate agent processing
+            processed_content = f"Processed content of {document_name} by {agent_name}"
+
+            # Add the agent-document pair to workflow_data
+            workflow_data.append({
+                'agent_name': agent_name,
+                'doc_name': document_name,
+                'doc_content': processed_content
+            })
+
+            print(f"Agent '{agent_name}' has processed document '{document_name}'.")
+
+            # Redirect to the workflow page
+            return HttpResponseRedirect(reverse('workflow_page'))
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method."}, status=405)

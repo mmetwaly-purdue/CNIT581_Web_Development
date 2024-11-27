@@ -169,8 +169,112 @@ button:hover {
     text-decoration: none;
     color: #333;
 }
+/*Documents Page content styles*/
+.document-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
 
+.document-item {
+    flex: 1 1 calc(25% - 20px);
+    text-align: center;
+}
 
+.document-button {
+    background-color: #00bcd4; /* Cyan Blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.document-button:hover {
+    background-color: #008c9e; /* Slightly darker cyan */
+}
+
+.tooltip {
+    position: absolute;
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+}
+
+form {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+form input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 300px;
+}
+
+form button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+.document-content {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    display: none;
+}
+
+.document-content.hidden {
+    display: none;
+}
+
+.document-content:not(.hidden) {
+    display: block;
+}
+
+#upload-section button {
+    background-color: #00bcd4; /* Cyan Blue */
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#upload-section button:hover {
+    background-color: #008c9e; /* Darker Cyan */
+    transform: scale(1.05); /* Slight hover effect */
+}
+
+#upload-section button:active {
+    transform: scale(0.95); /* Pressed effect */
+}
 /*Homepage content styles*/
 .title-section {
     background-color: #d3d3d3; /* Light gray background */
@@ -230,6 +334,24 @@ button:hover {
     background-color: transparent;
     font-weight: bold;
     cursor: not-allowed;
+}
+
+.agent-dropdown {
+    width: 500px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    background-color: #f9f9f9;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.agent-dropdown:focus {
+    border-color: #007bff;
+    box-shadow: 0px 4px 6px rgba(0, 123, 255, 0.4);
+    outline: none;
 }
 /* Filter Buttons Container */
 .filter-buttons {
@@ -590,6 +712,25 @@ button:hover {
 
 /* ------------------------------------------------------------------------------------------------------ */
 /* Agent Details Page Specific Styling */
+#run-agent-button {
+    background-color: #28a745; /* Green */
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#run-agent-button:hover {
+    background-color: #218838; /* Darker Green */
+    transform: scale(1.05); /* Slight hover effect */
+}
+
+#run-agent-button:active {
+    transform: scale(0.95); /* Pressed effect */
+}
 .agent-details {
     padding: 20px;
     text-align: center;
