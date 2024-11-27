@@ -1055,3 +1055,10 @@ textarea {
 .logout-popup button:hover {
     background: #c9302c;
 }
+/* ------------------------------------------------------------------------------------------------------ */
+/* Gemini Highlighting */
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+    color: black;
+}

@@ -754,33 +754,50 @@ $(document).ready(function () {
     $('.run-gemini-button').on('click', function () {
         const selectedBox = $(this).closest('.workflow-agent-box'); // Find the closest agent box
         const agentName = selectedBox.data('agent'); // Get the agent name
-        const documentContent = selectedBox.find('.document-content').text().trim(); // Get document content
-
+        const contentContainer = selectedBox.find('.document-content'); // Target the content container
+        const documentContent = contentContainer.text().trim(); // Get document content
+    
         console.log("Processing document for Gemini:", { agentName, documentContent });
-
+    
         if (!documentContent || documentContent === 'Loading...' || documentContent === 'Failed to load content.') {
             alert(`No valid document content found for agent "${agentName}".`);
             return;
         }
-
+    
         // Process the document content with Gemini
         $.ajax({
             url: '/run_gemini/',
             method: 'POST',
             headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
-            data: { 
-                document_content: documentContent,
-                agent_name: agentName // Include agent name
-            },
+            data: { document_content: documentContent, agent_name: agentName },
             success: function (response) {
-                console.log(`Gemini Response for ${agentName}:`, response.response);
-                alert(`Gemini Response for ${agentName}: ${response.response}`); // Optional: Show response to user
+                let wordsToHighlight = response.response; // Assuming the response is a string of words
+                console.log(`Gemini Response for ${agentName}:`, wordsToHighlight);
+    
+                // Ensure wordsToHighlight is an array
+                if (typeof wordsToHighlight === 'string') {
+                    wordsToHighlight = wordsToHighlight.split(',').map(word => word.trim());
+                }
+    
+                highlightWords(contentContainer, wordsToHighlight);
             },
             error: function (error) {
                 console.error("Error processing with Gemini:", error);
             }
         });
-    });    
+    });
+    
+    // Function to highlight words in a container
+    function highlightWords(container, words) {
+        const content = container.text();
+        const regex = new RegExp(`\\b(${words.join('|')})\\b`, 'gi'); // Create regex for word matching
+        const highlightedContent = content.replace(regex, (match) => {
+            return `<span class="highlight">${match}</span>`;
+        });
+    
+        container.html(highlightedContent); // Update the container with highlighted content
+    }
+    
 
     function loadDocumentContent(agentId, documentName) {
         const filePath = `/static/uploads/${documentName}`; // Path to the file

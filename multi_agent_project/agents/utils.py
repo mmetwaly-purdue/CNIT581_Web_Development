@@ -34,7 +34,8 @@ class Agent:
         }
     
 agent_list = [
-    {"id": 1, "name": "Alias Name Agent", "type": "Type 1"},
-    {"id": 2, "name": "Address Agent", "type": "Type 2"},
-    {"id": 3, "name": "Name Agent", "type": "Type 3"},
+    {"id": 1, "name": "Date Agent", "type": "Type 2"},
+    {"id": 2, "name": "Address Agent", "type": "Type 1"},
+    {"id": 3, "name": "Name Agent", "type": "Type 4"},
+    {"id": 4, "name": "Location Agent", "type": "Type 3"},
 ]
