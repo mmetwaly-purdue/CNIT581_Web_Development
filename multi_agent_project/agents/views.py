@@ -11,6 +11,7 @@ from .utils import agent_list, allowed_file, Agent
 from django.utils.safestring import mark_safe
 import os
 from django.conf import settings
+from LLM.Gemini import process_document_with_gemini
 
 User = get_user_model()
 
@@ -79,6 +80,9 @@ def agent_detail(request, agent_id):
             return HttpResponse("Agent not found", status=404)
     except (ValueError, TypeError):
         return HttpResponse("Invalid agent ID", status=400)
+
+def get_agent_list(request):
+    return JsonResponse({'agents': agent_list})
 
 def create_agent(request):
     if request.method == 'POST':
@@ -267,3 +271,24 @@ def run_agent(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid request method."}, status=405)
+
+def run_gemini(request):
+    if request.method == "POST":
+        # Get document content and agent name from the POST request
+        document_content = request.POST.get("document_content", "")
+        agent_name = request.POST.get("agent_name", "")  # Fetch agent name
+        
+        if not document_content:
+            return JsonResponse({"error": "No document content provided"}, status=400)
+        
+        if not agent_name:
+            return JsonResponse({"error": "No agent name provided"}, status=400)
+
+        try:
+            # Call the Gemini processing function with both document content and agent name
+            response = process_document_with_gemini(document_content, agent_name)
+            return JsonResponse({"response": response})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)

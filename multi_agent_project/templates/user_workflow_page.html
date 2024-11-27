@@ -115,17 +115,19 @@
         <div class="workflow-agent-grid">
             {% if logged_in %}
                 {% for doc in documents %}
-                    <div class="workflow-agent-box">
+                    <div class="workflow-agent-box" data-agent="{{ doc.agent_name }}" data-document="{{ doc.doc_name }}">
                         <h4 class="non-editable">{{ doc.agent_name }} - {{ doc.doc_name }}</h4>
                         <div class="document-content non-editable">
-                            {{ doc.doc_content }}
+                            Loading...
                         </div>
+                        <button class="run-gemini-button">Run Gemini</button> <!-- Gemini button added -->
                     </div>
                 {% endfor %}
             {% else %}
                 <p>Please sign in to view workflow content.</p>
             {% endif %}
         </div>
+        
 
     
 
@@ -151,6 +153,6 @@
             </nav>
         </footer>
     
-        <script src="{% static  'main.js' %}"></script> <!-- Linking to your JavaScript file -->
-	</body>
+        <script src="{% static  'main.js' %}"></script> <!-- Linking to your JavaScript file -->       
+    </body>
 </html>

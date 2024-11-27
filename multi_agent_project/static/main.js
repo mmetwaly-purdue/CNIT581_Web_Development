@@ -658,16 +658,43 @@ $(document).ready(function () {
         });
     });
 
+    // Fetch agent_list from the API
+    let agent_list = [];
+    // Fetch agent_list from the API
+    $.ajax({
+        url: '/api/agent-list/', // Ensure this matches your Django route
+        method: 'GET',
+        success: function (response) {
+            // Assign the response data to the outer scoped variable
+            agent_list = response.agents;
+            console.log("Agent list loaded:", agent_list);
+        },
+        error: function () {
+            console.error('Failed to load agent list.');
+        }
+    });
+
+    // Define the function to get agent name by ID
+    function getAgentNameById(id) {
+        const agent = agent_list.find(agent => agent.id === parseInt(id, 10));
+        if (!agent) {
+            console.error(`Agent with ID ${id} not found.`);
+        }
+        return agent ? agent.name : null;
+    }
+
     $('#run-agent-button').on('click', function () {
+        const url = window.location.href;
+        const idToUse = url[url.length - 2]
         const selectedDocument = $('#document-dropdown').val();
-        const agentName = '{{ agent.name }}'; // Pass agent name dynamically from the server
-        const agentId = '{{ agent.id }}'; // Assuming each agent has a unique ID
-    
+        const agentId = idToUse
+        const agentName = getAgentNameById(agentId);
+        console.log({ agent: agentName, document: selectedDocument });
         if (!selectedDocument) {
             alert('Please select a document to run the agent.');
             return;
         }
-    
+
         // Simulate running the agent with the document
         $.ajax({
             url: '/run_agent/',
@@ -677,21 +704,91 @@ $(document).ready(function () {
             data: JSON.stringify({ agent: agentName, document: selectedDocument }),
             success: function (response) {
                 alert(`Agent "${agentName}" ran successfully on document "${selectedDocument}".`);
-                // Load the document content into the agent box
+                // Redirect to workflow
                 window.location.href = '/workflow/';
-                loadDocumentContent(agentId, selectedDocument);
-                location.reload();
             },
             error: function (error) {
                 alert('Failed to run the agent.');
             }
         });
     });
-    // Function to load document content into an agent box
+
+    // Function to get CSRF Token
+    function getCSRFTokenFromCookie() {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=')) {
+                return cookie.substring('csrftoken='.length, cookie.length);
+            }
+        }
+        console.error('CSRF token not found in cookies.');
+        return null;
+    }
+
+    // Function to load all document content on the workflow page
+    function loadAllWorkflowContent() {
+        $('.workflow-agent-box').each(function () {
+            const documentName = $(this).data('document'); // Get document name
+            const contentContainer = $(this).find('.document-content'); // Target content container
+
+            console.log(`Loading content for document: ${documentName}`);
+            const filePath = `/static/uploads/${documentName}`;
+
+            $.get(filePath)
+                .done(function (data) {
+                    console.log(`Content loaded for ${documentName}:`, data);
+                    contentContainer.text(data); // Update the content
+                })
+                .fail(function () {
+                    console.error(`Failed to load content for ${documentName}`);
+                    contentContainer.text('Failed to load content.');
+                });
+        });
+    }
+
+    // Load workflow content on page load
+    loadAllWorkflowContent();
+
+    // Handle Run Gemini Button Click
+    $('.run-gemini-button').on('click', function () {
+        const selectedBox = $(this).closest('.workflow-agent-box'); // Find the closest agent box
+        const agentName = selectedBox.data('agent'); // Get the agent name
+        const documentContent = selectedBox.find('.document-content').text().trim(); // Get document content
+
+        console.log("Processing document for Gemini:", { agentName, documentContent });
+
+        if (!documentContent || documentContent === 'Loading...' || documentContent === 'Failed to load content.') {
+            alert(`No valid document content found for agent "${agentName}".`);
+            return;
+        }
+
+        // Process the document content with Gemini
+        $.ajax({
+            url: '/run_gemini/',
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
+            data: { 
+                document_content: documentContent,
+                agent_name: agentName // Include agent name
+            },
+            success: function (response) {
+                console.log(`Gemini Response for ${agentName}:`, response.response);
+                alert(`Gemini Response for ${agentName}: ${response.response}`); // Optional: Show response to user
+            },
+            error: function (error) {
+                console.error("Error processing with Gemini:", error);
+            }
+        });
+    });    
+
     function loadDocumentContent(agentId, documentName) {
-        const filePath = `/static/uploads/${documentName}`; // Adjust the path to match where your documents are stored
+        const filePath = `/static/uploads/${documentName}`; // Path to the file
+        console.log("Attempting to fetch file from:", filePath);
+    
         $.get(filePath, function (data) {
-            $(`#${agentId} .document-content`).text(data); // Load content into the appropriate agent box
+            console.log("File Content Received:", data); // Debug the received data
+            $(`#${agentId} .document-content`).text(data); // Display content
         }).fail(function () {
             alert('Failed to load document content.');
         });

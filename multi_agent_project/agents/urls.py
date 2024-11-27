@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import register, signin, store_connection, upload_document 
+from .views import register, signin, store_connection, upload_document, get_agent_list, run_gemini
 from django.http import JsonResponse
 
 def debug_catch_all(request):
@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.home_page, name='home_page'),
     path('about-us/', views.about_us_page, name='about_us_page'),
     path('agents/', views.agents_page, name='agents_page'),
+    path('api/agent-list/', get_agent_list, name='get_agent_list'),
     path('agent_detail/<int:agent_id>/', views.agent_detail, name='agent_detail'),
     path('documents/', views.documents_page, name='documents_page'),
     path('terms/', views.terms_page, name='terms_page'),
@@ -21,6 +22,7 @@ urlpatterns = [
     path('upload_document/', views.upload_document, name='upload_document'),
     path('workflow/', views.workflow_page, name='workflow_page'),
     path('run_agent/', views.run_agent, name='run_agent'),
+    path("run_gemini/", run_gemini, name="run_gemini"),
     path('register/', views.register, name='register'),
     path('signin/', views.signin, name='signin'),
     path('store_connection/', store_connection, name='store_connection'),
