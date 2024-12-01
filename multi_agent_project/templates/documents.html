@@ -81,11 +81,6 @@
                 <input type="text" name="search" placeholder="Search documents..." value="{{ search_query }}">
                 <button type="submit">Search</button>
             </form>
-            <h4>Upload a Document</h4>
-            <form id="upload-form" enctype="multipart/form-data">
-                <input type="file" name="file" id="file-input" required>
-                <button type="submit">Upload Document</button>
-            </form>
         </section>
         <!-- Document Buttons -->
         <div class="document-grid">
@@ -100,6 +95,13 @@
             {% empty %}
             <p>No documents found.</p>
             {% endfor %}
+        </div>
+        <div>
+            <h4>Upload a Document</h4>
+            <form id="upload-form" enctype="multipart/form-data">
+                <input type="file" name="file" id="file-input" required>
+                <button type="submit">Upload Document</button>
+            </form>
         </div>
     </main>
 
