@@ -161,7 +161,7 @@ def register(request):
 
             # Create the user
             user = User.objects.create_user(
-                username=email,  # Use email as username
+                username=first_name,  # Use email as username
                 email=email,
                 password=password,
                 first_name=first_name,
@@ -208,17 +208,54 @@ def delete_agent_workflow(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            agent_name = data.get('agent_name')
+            agent_name = data.get('agent_name')  # Expecting 'agent_name' from the frontend
 
-            # Find and delete the agent in the database
+            if not agent_name:
+                return JsonResponse({"message": "Agent name is required."}, status=400)
+
+            # Find and delete agent by name
             global agent_list
-            agent_list = [agent for agent in agent_list if agent["name"] != agent_name]
+            original_length = len(agent_list)
+            agent_list = [agent for agent in agent_list if agent['name'] != agent_name]
 
-            return JsonResponse({"message": f"Agent '{agent_name}' deleted successfully."}, status=200)
+            if len(agent_list) < original_length:
+                return JsonResponse({"message": f"Agent '{agent_name}' deleted successfully."}, status=200)
+            else:
+                return JsonResponse({"message": "Agent not found."}, status=404)
         except Exception as e:
             return JsonResponse({"message": f"Error deleting agent: {str(e)}"}, status=500)
-
     return JsonResponse({"message": "Invalid request method."}, status=405)
+
+def get_summary(request):
+    global workflow_data, all_connections, deleted_agents
+
+    # Build the summary
+    summary_data = {
+        "documents_used": [doc['doc_name'] for doc in workflow_data],
+        "agents_used": [doc['agent_name'] for doc in workflow_data],
+        "connections_made": [f"{conn['agent1Text']} - {conn['agent2Text']}" for conn in all_connections],
+        "connections_deleted": [f"{conn['agent1Text']} - {conn['agent2Text']}" for conn in all_connections],
+        "deleted_agents": deleted_agents,
+    }
+
+    return JsonResponse({"summary": summary_data}, status=200)
+
+@csrf_exempt
+def save_highlights(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            agent_name = data.get('agent_name')
+            highlights = data.get('highlights')
+
+            # Logic to save highlights (e.g., save to database or a file)
+            # For simplicity, print the data for now
+            print(f"Highlights for {agent_name}: {highlights}")
+
+            return JsonResponse({"message": "Highlights saved successfully."}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
 
 @csrf_exempt
 def store_connection(request):

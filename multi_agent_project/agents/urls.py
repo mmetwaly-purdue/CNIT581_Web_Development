@@ -20,6 +20,7 @@ urlpatterns = [
     path('delete_agent/', views.delete_agent, name='delete_agent'),
     path('get_documents/', views.get_documents, name='get_documents'),
     path('upload_document/', views.upload_document, name='upload_document'),
+    path('get_summary/', views.get_summary, name='get_summary'),
     path('workflow/', views.workflow_page, name='workflow_page'),
     path('run_agent/', views.run_agent, name='run_agent'),
     path("run_gemini/", run_gemini, name="run_gemini"),

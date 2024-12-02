@@ -105,11 +105,10 @@
             <button id="deleteConnectionButton" class="workflow-action-button">Delete Connection</button>
             <button id="highlightConnectionButton" class="workflow-action-button">Highlight Connection</button>
             <button id="hideConnectionButton" class="workflow-action-button">Hide Connection</button>
+            <h3>Produce Summary of Annotations and Connections</h3>
+            <button id="summaryButton" class="workflow-action-button">Summary</button> 
         </div>
-        
-        
-        
-        <button id="summaryButton" class="workflow-action-button">Summary</button> 
+                
         <!-- Agents Section (Grid Layout) -->
         <!-- Workflow Agent Boxes with placeholders for document content -->
         <div class="workflow-agent-grid">
@@ -117,6 +116,8 @@
                 {% for doc in documents %}
                     <div class="workflow-agent-box" data-agent="{{ doc.agent_name }}" data-document="{{ doc.doc_name }}">
                         <h4 class="non-editable">{{ doc.agent_name }} - {{ doc.doc_name }}</h4>
+                        <!-- Add Highlight Text button -->
+                        <button class="highlight-text-button" data-agent="{{ doc.agent_name }}">Make Annotations</button>
                         <div class="document-content non-editable">
                             Loading...
                         </div>
@@ -128,7 +129,9 @@
             {% endif %}
         </div>
         
-
+        <div id="summaryDisplay" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">
+            <!-- Summary content will be dynamically added here -->
+        </div>
     
 
 

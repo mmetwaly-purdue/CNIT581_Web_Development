@@ -1,7 +1,10 @@
 $(document).ready(function () {
     const connections = []; // Store all connections
+    const all_connections = [];
     const highlights = {};  // Store user highlights
     const agentColors = {}; // Store a consistent color per agent
+    const deleted_agents = []
+    const deleted_connections = []
     let ascending = true; // Variable to track sort order
     let summaryText = "";
  
@@ -99,6 +102,7 @@ $(document).ready(function () {
 
         const connection = { agent1Text: agent1, agent2Text: agent2, line: $('<div class="connection-line"></div>') };
         connections.push(connection);
+        //all_connections.push({ agent1Text: agent1, agent2Text: agent2});
         $('body').append(connection.line);
         redrawConnections();
         updateConnectionsDropdown();
@@ -114,6 +118,7 @@ $(document).ready(function () {
         }
 
         const connection = connections[selectedIndex];
+        deleted_connections.push(connection);
         connection.line.remove();
         connections.splice(selectedIndex, 1);
         updateConnectionsDropdown();
@@ -139,6 +144,8 @@ $(document).ready(function () {
         }
 
         const connection = connections[selectedIndex];
+        // Highlight the connection by changing its color
+        connection.line.css('background-color', 'red'); // Highlight color
         console.log(`Highlighting connection: ${connection.agent1Text} AND ${connection.agent2Text}`);
         alert('Connection highlighted successfully.');
     });
@@ -176,6 +183,47 @@ $(document).ready(function () {
             }
         });
     }
+    // Handle click on Highlight Text button
+    $(document).on('click', '.highlight-text-button', function () {
+        const agentName = $(this).data('agent');
+        const agentBox = $(`.workflow-agent-box[data-agent="${agentName}"]`);
+        const documentContent = agentBox.find('.document-content');
+
+        // Enable text selection and apply highlights
+        documentContent.attr('contenteditable', 'true');
+        documentContent.addClass('highlight-mode');
+
+        alert(`You can now highlight text in the document for agent: ${agentName}`);
+    });
+
+    $('.document-content').on('mouseup', function () {
+        const selection = window.getSelection();
+        if (selection.isCollapsed) return; // No text selected
+    
+        const selectedText = selection.toString().trim();
+        const agentName = $(this).closest('.workflow-agent-box').data('agent');
+    
+        if (!highlights[agentName]) {
+            highlights[agentName] = [];
+        }
+    
+        // Save and apply the highlight immediately
+        if (!highlights[agentName].includes(selectedText)) {
+            highlights[agentName].push(selectedText);
+    
+            const range = selection.getRangeAt(0);
+            const span = document.createElement('span');
+            span.className = 'user-highlight'; // Apply user highlight class
+            span.textContent = selectedText;
+            range.deleteContents();
+            range.insertNode(span);
+    
+            console.log(`Highlight applied and saved for ${agentName}:`, selectedText);
+        }
+    
+        // Clear the selection
+        selection.removeAllRanges();
+    })
 
     // Handle deletion
     $('#delete-agent-mode').on('click', function () {
@@ -221,49 +269,78 @@ $(document).ready(function () {
             return;
         }
     
-        // Find and remove the agent box
-        const agentBox = Array.from(document.querySelectorAll('.workflow-agent-box'))
-            .find(box => box.querySelector('h4').textContent.startsWith(selectedAgent));
-    
-        if (agentBox) {
-            agentBox.remove(); // Remove the agent box from the DOM
-            alert(`Agent "${selectedAgent}" deleted successfully.`);
-            $('#delete-agent-dropdown').val(""); 
-            updateAgentDropdowns();// Reset the dropdown
-        } else {
-            alert(`Agent "${selectedAgent}" not found.`);
-        }
-    });
-
-    // New logic for displaying the summary of all connections
-    $('#summaryButton').on('click', function () {
-        if (summaryText === "") {
-            console.log("No highlights available to display.");
-            $('#summary-textarea').val("No highlights available.");
-        } else {
-            // Paste the summaryText into the summary text area or output it as desired
-            $('#summary-textarea').val(summaryText);
-    
-            // Log the summaryText variable
-            console.log("Current summaryText: ", summaryText);
-        }
-        console.log('Summary button clicked');
-        // Fetch the summary from the backend
+        // Send the delete request to the server
         $.ajax({
-            url: '/get_summary/',
-            method: 'GET',
+            url: '/delete_agent/', // Backend endpoint for deleting the agent
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() }, // Include CSRF token
+            contentType: 'application/json',
+            data: JSON.stringify({ agent_name: selectedAgent }), // Send the agent name to delete
             success: function (response) {
-                // Display the summary in the new summary text area
-                let currentContent = $('#summary-textarea').val();
-                $('#summary-textarea').val(currentContent + response.summary);
-                console.log("Successfuly displayed summary")
+                alert(response.message);
+                // Add the deleted agent to a tracking variable
+                deleted_agents.push(selectedAgent);
+                // Remove the agent box from the DOM
+                $(`.workflow-agent-box[data-agent="${selectedAgent}"]`).remove();
+    
+                // Remove the agent from the dropdown
+                $(`#delete-agent-dropdown option[value="${selectedAgent}"]`).remove();
+    
+                // Update the dropdown options to reflect the change
+                updateAgentDropdowns();
             },
             error: function (error) {
-                console.error('Error:', error);
-                alert('Failed to fetch summary.');
+                alert('Failed to delete the agent. Please try again.');
+                console.error('Deletion error:', error);
             }
         });
     });
+
+    $('#summaryButton').on('click', function () {
+        const summaryDiv = $('#summaryDisplay');
+        summaryDiv.empty(); // Clear previous content
+        summaryDiv.append('<h3>Summary</h3>');
+    
+        // Collect data for summary
+        const summaryData = {
+            documents_used: [],
+            agents_used: [],
+            connections_made: connections.map(conn => `${conn.agent1Text} - ${conn.agent2Text}`),
+            connections_deleted: deleted_connections.map(conn => `${conn.agent1Text} - ${conn.agent2Text}`),
+            deleted_agents: deleted_agents
+        };
+    
+        // Iterate over workflow agent boxes to gather agent and document names
+        $('.workflow-agent-box').each(function () {
+            const agentName = $(this).data('agent');
+            const documentName = $(this).data('document'); // Retrieve document name
+            const agentHighlights = highlights[agentName] || []; // Get highlights for the agent
+    
+            // Format highlights into the summary
+            const formattedHighlights = agentHighlights.join(', ');
+    
+            // Add document and agent to "documents_used" and "agents_used" arrays
+            if (documentName && !summaryData.documents_used.includes(documentName)) {
+                summaryData.documents_used.push(documentName);
+            }
+            if (agentName && !summaryData.agents_used.includes(agentName)) {
+                summaryData.agents_used.push(agentName);
+            }
+    
+            // Append agent and document-specific highlights to the summary
+            summaryDiv.append(`<p><strong>Annotation ${agentName} - ${documentName}:</strong> ${formattedHighlights || 'None'}</p>`);
+        });
+    
+        // Append other summary details
+        summaryDiv.append('<p><strong>Documents Used:</strong> ' + (summaryData.documents_used.join(', ') || 'None') + '</p>');
+        summaryDiv.append('<p><strong>Agents Used:</strong> ' + (summaryData.agents_used.join(', ') || 'None') + '</p>');
+        summaryDiv.append('<p><strong>Connections Made:</strong> ' + (summaryData.connections_made.join(', ') || 'None') + '</p>');
+        summaryDiv.append('<p><strong>Connections Deleted:</strong> ' + (summaryData.connections_deleted.join(', ') || 'None') + '</p>');
+        summaryDiv.append('<p><strong>Deleted Agents:</strong> ' + (summaryData.deleted_agents.join(', ') || 'None') + '</p>');
+    
+        summaryDiv.css('display', 'block'); // Ensure the summary section is visible
+    });
+    
 
     //---------------------------------------------------------------------------------------//
     //Documents Page Javascript code
@@ -356,37 +433,6 @@ $(document).ready(function () {
         header.html(`<span style="background-color:${color};">${agentName}</span>`);
     }
 
-    // Add Connection with consistent color for connected agents
-    $('.workflow-action-button').eq(0).on('click', function () {
-        const connectionInput = $('#workflow-textarea').val();
-        const [agent1Text, agent2Text] = connectionInput.split(" AND ").map(str => str.trim());
-        const agentBox1 = $(`.workflow-agent-box:contains("${agent1Text}")`).first();
-        const agentBox2 = $(`.workflow-agent-box:contains("${agent2Text}")`).first();
-
-        if (agentBox1.length && agentBox2.length) {
-            // Assign or reuse a color for this connection
-            const connectionColor = agentColors[agent1Text] || getRandomColor();
-            agentColors[agent1Text] = connectionColor;
-            agentColors[agent2Text] = connectionColor;
-
-            // Highlight both agent names in headers with the same color
-            highlightAgentName(agentBox1, connectionColor);
-            highlightAgentName(agentBox2, connectionColor);
-
-            // Draw line between connected agents
-            const line = $('<div class="connection-line"></div>').css({
-                background: connectionColor,
-                height: '2px'
-            });
-            $('body').append(line);
-            drawLine(line, agentBox1, agentBox2);
-
-            connections.push({ line, agent1Text, agent2Text, color: connectionColor });
-        } else {
-            alert("Enter valid agent texts in format: Agent1 Text AND Agent2 Text.");
-        }
-    })
-
     // Draw a line between two agent boxes
     function drawLine(line, box1, box2) {
         const pos1 = box1.offset();
@@ -407,61 +453,6 @@ $(document).ready(function () {
             transformOrigin: '0 0'
         });
     }
-
-
-    // ** Hide All Connections **
-    $('.workflow-action-button').eq(4).on('click', function () {
-        connections.forEach(connection => {
-            connection.line.toggle(); // Toggle visibility
-        });
-    });
-
-    // ** Highlight All Connections in Red **
-    $('.workflow-action-button').eq(2).on('click', function () {
-        connections.forEach(connection => {
-            connection.line.css('background', 'red');
-        });
-    });
-    
-    //---------------------------------------------------------------------------------------//
-    // ** Open Delete Agent Modal when button is clicked **
-    $('.workflow-action-button').eq(3).on('click', function () {
-        $('#deleteAgentModal').show(); // Display the modal to confirm deletion
-    });
-
-    // ** Confirm Delete Agent by Name **
-    $('#confirmDeleteAgent').on('click', function () {
-        const agentToDelete = $('#agentToDelete').val().trim();
-        const agentBox = $(`.workflow-agent-box:contains("${agentToDelete}")`).filter(function() {
-            return $(this).text().includes(agentToDelete);
-        }).first();
-
-        if (agentBox.length) {
-            // Remove associated connections
-            connections.forEach((connection, index) => {
-                if (connection.agent1Text === agentToDelete || connection.agent2Text === agentToDelete) {
-                    connection.line.remove(); // Remove the line from the DOM
-                    connections.splice(index, 1); // Remove connection from the array
-                    console.log(`Connection removed for agent: ${agentToDelete}`);
-                }
-            });
-
-            // Remove the agent box itself
-            agentBox.remove();
-            $('#deleteAgentModal').hide();
-            $('#agentToDelete').val(''); // Clear input after deletion
-
-            console.log(`Agent ${agentToDelete} and associated connections deleted.`);
-        } else {
-            alert("Agent not found. Please enter the correct agent name.");
-        }
-    })
-
-    // Close Delete Agent Modal
-    $('#closeDeleteAgentModal').on('click', function () {
-        $('#deleteAgentModal').hide();
-        $('#agentToDelete').val(''); // Clear input when closed
-    });
 
     //---------------------------------------------------------------------------------------//
     // Function to generate a random color
@@ -495,30 +486,6 @@ $(document).ready(function () {
         console.log(`Highlight applied with color ${color}`);
     }
     
-    // Event listener for text selection within any agent box
-    $('.workflow-agent-box .document-content').on('mouseup', function () {
-        const agentBox = $(this).closest('.workflow-agent-box');
-        const agentName = agentBox.find('h4').text();
-        const selection = window.getSelection();
-    
-        if (!selection.isCollapsed) {
-            const range = selection.getRangeAt(0);
-            const start = range.startOffset;
-            const end = range.endOffset;
-    
-            // Use consistent color for each agent, generating one if agent does not already have a color
-            if (!agentColors[agentName]) {
-                agentColors[agentName] = getRandomColor();
-            }
-            const color = agentColors[agentName];
-    
-            applyHighlight(agentBox, start, end, color);
-    
-            // Save the highlight (session only for now)
-            saveHighlight(agentName, start, end, color);
-        }
-    });
-
     // Function to save highlights for the session and update the summary
     function saveHighlight(agentName, start, end, color) {
         if (!highlights[agentName]) {
@@ -764,6 +731,13 @@ $(document).ready(function () {
             return;
         }
     
+        // Save existing highlights to the global `highlights` object
+        if (!highlights[agentName]) {
+            highlights[agentName] = [];
+        }
+
+        const savedHighlights = highlights[agentName]; // User highlights
+
         // Process the document content with Gemini
         $.ajax({
             url: '/run_gemini/',
@@ -778,8 +752,23 @@ $(document).ready(function () {
                 if (typeof wordsToHighlight === 'string') {
                     wordsToHighlight = wordsToHighlight.split(',').map(word => word.trim());
                 }
-    
-                highlightWords(contentContainer, wordsToHighlight);
+
+                // Replace content with Gemini response
+                contentContainer.text(response.updated_content || documentContent);
+
+                // Merge user and Gemini highlights
+                const combinedHighlights = [...new Set([...savedHighlights, ...wordsToHighlight])];
+
+                // Apply combined highlights
+                highlightWords(contentContainer, combinedHighlights);
+
+                // Update highlights array
+                highlights[agentName] = combinedHighlights;
+
+                //highlights.push(wordsToHighlight)
+                //highlightWords(contentContainer, wordsToHighlight);
+                // Reapply highlights after modification
+
             },
             error: function (error) {
                 console.error("Error processing with Gemini:", error);
@@ -789,13 +778,19 @@ $(document).ready(function () {
     
     // Function to highlight words in a container
     function highlightWords(container, words) {
-        const content = container.text();
-        const regex = new RegExp(`\\b(${words.join('|')})\\b`, 'gi'); // Create regex for word matching
+        const content = container.text(); // Get the plain text of the container
+        const regex = new RegExp(`\\b(${words.join('|')})\\b`, 'gi'); // Match all words
+    
+        // Replace matched words with spans
         const highlightedContent = content.replace(regex, (match) => {
-            return `<span class="highlight">${match}</span>`;
+            // Check if the match is a user or Gemini highlight
+            const isUserHighlight = highlights.some(h => h.text === match && h.type === 'user');
+            const highlightClass = isUserHighlight ? 'user-highlight' : 'gemini-highlight';
+    
+            return `<span class="${highlightClass}">${match}</span>`;
         });
     
-        container.html(highlightedContent); // Update the container with highlighted content
+        container.html(highlightedContent); // Update the DOM with highlighted content
     }
     
 

@@ -436,7 +436,14 @@ form button:hover {
     height: 2px;
     z-index: -1;
 }
-
+#summaryDisplay {
+    display: none;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
 /* Highlighted text styling */
 .highlight {
     font-weight: bold;
@@ -447,6 +454,24 @@ form button:hover {
 /* Styling for connected highlights */
 .connected-highlight {
     background-color: lightblue !important;
+}
+
+.highlight-mode {
+    outline: 1px dashed #ffa500;
+    cursor: text;
+}
+
+.highlight {
+    background-color: lightgreen;
+    font-weight: bold;
+}
+
+.user-highlight {
+    background-color: #FFD700; /* Gold for user highlights */
+}
+
+.gemini-highlight {
+    background-color: #ADD8E6; /* Light blue for Gemini highlights */
 }
 /* ------------------------------------------------------------------------------------------------------ */
 #deleteAgentModal {
@@ -978,55 +1003,63 @@ textarea {
 /* ------------------------------------------------------------------------------------------------------ */
 /* Styling for modals (Sign In and Register) */
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
+    display: none; /* Hidden by default */
+    position: fixed; /* Positioned relative to the viewport */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; /* Full width for responsiveness */
+    max-width: 400px; /* Limit modal width */
     background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    text-align: center;
-    position: relative;
+    z-index: 1000;
+    overflow: hidden; /* Prevent content overflow */
 }
 
-.modal-content input {
-    width: 90%; /* Restrict the input field width to 90% of the modal */
-    max-width: 350px; /* Optional: Add a maximum width */
-    padding: 10px; /* Keep padding for usability */
-    margin: 10px auto; /* Add vertical spacing and center-align */
-    display: block; /* Ensure it centers inside the modal */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
+/* Modal Content */
+.user-modal-content {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center;    /* Center-align elements horizontally */
+    padding: 20px;
+    gap: 15px;              /* Add spacing between elements */
+    width: 100%;            /* Full width inside the modal */
+    box-sizing: border-box; /* Include padding in width */
 }
 
-.modal-content button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
+/* Inputs */
+.user-modal-content input {
+    width: 90%; /* Adjust width to avoid edge touching */
+    margin: 10px auto;
+    padding: 10px;
+    box-sizing: border-box;
 }
-/* ------------------------------------------------------------------------------------------------------ */
-/* Close button for modals */
+
+.user-modal-content button {
+    width: 90%;
+    max-width: 350px;
+    margin: 10px 0; /* Align with inputs */
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.user-modal-content button:hover {
+    background-color: #0056b3;
+}
+
+/* Close Button */
 .close {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
+    font-size: 18px;
     cursor: pointer;
-    font-size: 24px;
+    color: #333;
 }
+
+/* ------------------------------------------------------------------------------------------------------ */
 
 .logout-popup {
     display: none;
