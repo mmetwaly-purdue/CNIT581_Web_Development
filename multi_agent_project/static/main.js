@@ -783,11 +783,7 @@ $(document).ready(function () {
     
         // Replace matched words with spans
         const highlightedContent = content.replace(regex, (match) => {
-            // Check if the match is a user or Gemini highlight
-            const isUserHighlight = highlights.some(h => h.text === match && h.type === 'user');
-            const highlightClass = isUserHighlight ? 'user-highlight' : 'gemini-highlight';
-    
-            return `<span class="${highlightClass}">${match}</span>`;
+            return `<span class="highlight">${match}</span>`;
         });
     
         container.html(highlightedContent); // Update the DOM with highlighted content
@@ -834,4 +830,5 @@ $(document).ready(function () {
             $('#logoutPopup').hide();
         }
     });
+
 });

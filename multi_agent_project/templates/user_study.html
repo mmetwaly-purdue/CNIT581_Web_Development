@@ -42,8 +42,8 @@
             </nav>
         </header>
         <header class="user-workflow-section">
-            <h1>Agent Workflow</h1>
-            <h2>Make Connections</h2>
+            <h1>User Study Workflow</h1>
+            <h2>Make Connections and Answer the Question</h2>
         </header>
         <!-- Registration and Sign In-->
         <!-- Register Modal -->
@@ -112,29 +112,37 @@
         <!-- Agents Section (Grid Layout) -->
         <!-- Workflow Agent Boxes with placeholders for document content -->
         <div class="workflow-agent-grid">
-            {% if logged_in %}
-                {% for doc in documents %}
-                    <div class="workflow-agent-box" data-agent="{{ doc.agent_name }}" data-document="{{ doc.doc_name }}">
-                        <h4 class="non-editable">{{ doc.agent_name }} - {{ doc.doc_name }}</h4>
-                        <!-- Add Highlight Text button -->
-                        <button class="highlight-text-button" data-agent="{{ doc.agent_name }}">Make Annotations</button>
-                        <div class="document-content non-editable">
-                            Loading...
-                        </div>
-                        <button class="run-gemini-button">Run Gemini</button> <!-- Gemini button added -->
+            {% for doc in documents %}
+                <div class="workflow-agent-box" data-agent="{{ doc.agent_name }}" data-document="{{ doc.doc_name }}">
+                    <h4 class="non-editable">{{ doc.agent_name }} - {{ doc.doc_name }}</h4>
+                    <!-- Add Highlight Text button -->
+                    <button class="highlight-text-button" data-agent="{{ doc.agent_name }}">Make Annotations</button>
+                    <div class="document-content non-editable">
+                        Loading...
                     </div>
-                {% endfor %}
-            {% else %}
-                <p>Please sign in to view workflow content.</p>
-            {% endif %}
+                    <button class="run-gemini-button">Run Gemini</button> <!-- Gemini button added -->
+                </div>
+            {% endfor %}
+
         </div>
         
         <div id="summaryDisplay" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">
             <!-- Summary content will be dynamically added here -->
         </div>
-    
+        
+        <!-- Question Section -->
+        <div class="question-section">
+            <h2>Question</h2>
+            <p>What is the alias used by Tom Koracick after entering the USA in 1993?</p>
+
+            <textarea id="userAnswer" placeholder="Your Answer"></textarea>
+            <button id="noHelpButton" class="study-action-button">Submit Without Help</button>
+            <button id="geminiHelpButton" class="study-action-button">Ask Gemini</button>
+        </div>
 
 
+
+        
         <!-- Footer with additional links -->
         <footer>
             <nav>

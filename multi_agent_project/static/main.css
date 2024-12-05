@@ -1090,8 +1090,47 @@ textarea {
 }
 /* ------------------------------------------------------------------------------------------------------ */
 /* Gemini Highlighting */
-.highlight {
-    background-color: yellow;
-    font-weight: bold;
-    color: black;
+/* ------------------------------------------------------------------------------------------------------ */
+/* Center the User Study Button */
+.user-study-button-container {
+    display: flex; /* Use Flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically (optional if needed) */
+    margin-top: 20px; /* Add spacing from other elements */
+    margin-bottom: 20px;
+}
+/* Center the Question Section */
+.question-section {
+    margin: 20px auto; /* Center horizontally */
+    text-align: center; /* Center the text inside */
+    max-width: 600px; /* Limit the width */
+    padding: 20px; /* Add padding for spacing */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+    background-color: #f9f9f9; /* Optional: Light background */
+}
+
+.question-section textarea {
+    width: 80%;
+    height: 100px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.study-action-button {
+    background-color: darkviolet;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.study-action-button:hover {
+    background-color: rebeccapurple;
 }

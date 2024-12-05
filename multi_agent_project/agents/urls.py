@@ -30,5 +30,6 @@ urlpatterns = [
     path('delete_agent_workflow/', views.delete_agent_workflow, name='delete_agent_workflow'),
     path('get_connections/', views.get_connections, name='get_connections'),
     path('logout/', views.logout_view, name='logout'),
+    path('user_study/', views.user_study, name='user_study'),
     path('<path:path>', debug_catch_all),  # Catch all other paths
 ]
