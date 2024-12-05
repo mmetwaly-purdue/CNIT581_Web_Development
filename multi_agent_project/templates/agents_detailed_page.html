@@ -77,8 +77,7 @@
         </div>
         <section class="agent-details">
             <div class="agent-header">
-                <h2>Want to publish your Agent for everyone to use? (send your agent to our development team)</h2>
-                <button class="publish-button">Publish</button>
+                <h2>Upload the document you want to run this agent on below. The document and agent will be coupled and shown in workflow page.</h2>
             </div>
             <div class="agent-info-container">
                 <div class="agent-image">
@@ -87,23 +86,26 @@
                 <div class="agent-details-content">
                     <div class="agent-detail-row">
                         <label for="agent-name">Name:</label>
-                        <input type="text" id="agent-name" value="Gemini Agent" readonly>
+                        <span id="agent-name">{{ agent.name }}</span>
                     </div>
                     <div class="agent-detail-row">
                         <label for="created-by">Created by:</label>
-                        <input type="text" id="created-by" value="Developers" readonly>
+                        <span id="created-by">Developers</span>
                     </div>
                     <div class="agent-detail-row">
                         <label for="date-created">Date Created:</label>
-                        <input type="text" id="date-created" value="2024-09-06T13:52:10Z" readonly>
+                        <span id="date-created">2024-09-06T13:52:10Z</span>
                     </div>
                     <div class="agent-description">
                         <h4>Description</h4>
                         <textarea readonly>Gemini Based LLM Agent.</textarea>
                     </div>
                     <div class="output-structure">
-                        <h4>Output Structure</h4>
-                        <textarea readonly>Example Output structure</textarea>
+                        <h4>Output Example</h4>
+                        <p>
+                            <h4>{{ agent.name }} - Document.txt</h4>
+                            Agent will <span class="highlight">highlight</span> relevant text in attached document.
+                        </p>
                     </div>
 
                     <div id="run-agent-section">

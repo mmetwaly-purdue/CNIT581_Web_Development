@@ -800,14 +800,22 @@ form button:hover {
 .agent-detail-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    margin-bottom: 10px;
 }
 
-.agent-detail-row input {
-    width: 200px;
-    padding: 5px;
+.agent-detail-row label {
+    width: 120px; /* Adjust based on your layout */
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.agent-detail-row span {
+    display: inline-block;
+    background-color: #dc8484; /* Light background for readability */
+    padding: 5px 10px;
     border: 1px solid #ccc;
-    background-color: #e0e0e0;
+    border-radius: 4px;
+    min-width: 200px; /* Optional: ensure consistent width */
 }
 
 .agent-description,
