@@ -11,7 +11,7 @@ $(document).ready(function () {
         }
         console.error('CSRF token not found in cookies.');
         return null;
-    }
+    }    
     const connections = []; // Store all connections
     const highlights = {};  // Store user highlights
     const agentColors = {}; // Store a consistent color per agent
@@ -189,7 +189,7 @@ $(document).ready(function () {
         const last_name = $('#registerLastName').val();
         const email = $('#registerEmail').val();
         const password = $('#registerPassword').val();
-
+    
         $.ajax({
             url: '/register/',
             method: 'POST',
@@ -197,15 +197,16 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify({ first_name, last_name, email, password }),
             success: function (response) {
+                console.log('Registration successful:', response);
                 alert(response.message);
                 $('#registerModal').css('display', 'none');
             },
             error: function (error) {
-                alert('Failed to register. Please try again.');
+                console.error('Registration failed:', error);
+                alert('Failed to register: ' + (error.responseJSON?.message || error.responseText));
             }
         });
     });
-
     // Handle Sign-In Form Submission
     $('#signInForm').on('submit', function (event) {
         event.preventDefault();
@@ -219,12 +220,11 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify({ username, password }),
             success: function (response) {
+                console.log('Sign-in successful:', response);
                 $('#signInModal').css('display', 'none'); // Hide the modal
 
                 // Dynamically update the navigation bar
-                $('.auth-buttons').html(
-                    `<p>Hello, ${response.username}!</p>`
-                );
+                $('.auth-buttons').html(`<p>Hello, ${response.username}!</p>`);
 
                 // Show user-specific content (like the workflow grid)
                 $('#userLogo').show();
@@ -232,10 +232,12 @@ $(document).ready(function () {
                 location.reload();
             },
             error: function (error) {
+                console.error('Sign-in failed:', error);
                 alert('Sign-in failed. Please check your credentials.');
             }
         });
     });
+
 
 
     //---------------------------------------------------------------------------------------//

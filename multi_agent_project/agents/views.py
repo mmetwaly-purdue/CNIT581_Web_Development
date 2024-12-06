@@ -156,12 +156,12 @@ def register(request):
                 return JsonResponse({"message": "Missing fields"}, status=400)
 
             # Check if email exists
-            if User.objects.filter(email=email).exists():
+            if User.objects.filter(username=email).exists():
                 return JsonResponse({"message": "Email already exists"}, status=400)
 
             # Create the user
             user = User.objects.create_user(
-                username=first_name,  # Use email as username
+                username=email,  # Use email as the username
                 email=email,
                 password=password,
                 first_name=first_name,
@@ -184,6 +184,7 @@ def signin(request):
         if not email or not password:
             return JsonResponse({"message": "Missing fields"}, status=400)
 
+        # Use email as the username for authentication
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
