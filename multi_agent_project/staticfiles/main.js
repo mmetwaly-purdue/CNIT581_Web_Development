@@ -168,79 +168,75 @@ $(document).ready(function () {
     });
 
     //---------------------------------------------------------------------------------------//
-    // Open and close modals
+    // Open modals
     $('#registerBtn').on('click', function () {
-        $('#registerModal').css('display', 'block');
+        $('#registerModal').css('display', 'flex'); // Show Register Modal
     });
 
     $('#signInBtn').on('click', function () {
-        $('#signInModal').css('display', 'block');
+        $('#signInModal').css('display', 'flex'); // Show Sign In Modal
     });
 
+    // Close modals
     $('.close').on('click', function () {
-        $('.modal').css('display', 'none');
+        $('.modal').css('display', 'none'); // Hide all modals
     });
 
     // Handle Register Form Submission
     $('#registerForm').on('submit', function (event) {
         event.preventDefault();
-        const username = $('#registerUsername').val();
-        const password = $('#registerPassword').val();
+        const first_name = $('#registerFirstName').val();
+        const last_name = $('#registerLastName').val();
         const email = $('#registerEmail').val();
-        const csrfToken = getCSRFTokenFromCookie();
-        console.log('CSRF Token:', csrfToken);
-        if (!csrfToken) {
-            alert('CSRF token not found. Registration cannot proceed.');
-            return;
-        }
+        const password = $('#registerPassword').val();
 
         $.ajax({
             url: '/register/',
             method: 'POST',
-            headers: { 'X-CSRFToken': csrfToken },
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
             contentType: 'application/json',
-            data: JSON.stringify({ username, password, email }),
+            data: JSON.stringify({ first_name, last_name, email, password }),
             success: function (response) {
-                console.log('Registration successful:', response);
                 alert(response.message);
                 $('#registerModal').css('display', 'none');
             },
             error: function (error) {
-                console.error('Error during registration:', error);
-                alert('Registration failed. Please check the console for details.');
+                alert('Failed to register. Please try again.');
             }
         });
     });
 
-    // Handle Sign In Form Submission
+    // Handle Sign-In Form Submission
     $('#signInForm').on('submit', function (event) {
         event.preventDefault();
-        const username = $('#signInUsername').val();
+        const username = $('#signInUsername').val(); // Using email as username
         const password = $('#signInPassword').val();
-        const csrfToken = getCSRFTokenFromCookie();
-
-        if (!csrfToken) {
-            alert('CSRF token not found. Sign-in cannot proceed.');
-            return;
-        }
 
         $.ajax({
             url: '/signin/',
             method: 'POST',
-            headers: { 'X-CSRFToken': csrfToken },
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
             contentType: 'application/json',
             data: JSON.stringify({ username, password }),
             success: function (response) {
-                console.log('Sign-in successful:', response);
-                alert(response.message);
-                $('#signInModal').css('display', 'none');
+                $('#signInModal').css('display', 'none'); // Hide the modal
+
+                // Dynamically update the navigation bar
+                $('.auth-buttons').html(
+                    `<p>Hello, ${response.username}!</p>`
+                );
+
+                // Show user-specific content (like the workflow grid)
+                $('#userLogo').show();
+                $('.workflow-agent-grid').show();
+                location.reload();
             },
             error: function (error) {
-                console.error('Error during sign-in:', error);
-                alert('Sign-in failed. Please check the console for details.');
+                alert('Sign-in failed. Please check your credentials.');
             }
         });
     });
+
 
     //---------------------------------------------------------------------------------------//
    // Apply highlight to agent names in the header

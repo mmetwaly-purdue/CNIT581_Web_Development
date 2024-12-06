@@ -853,56 +853,6 @@ textarea {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
 }
 
-/* ------------------------------------------------------------------------------------------------------ */
-/* Styling for modals (Sign In and Register) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    text-align: center;
-    position: relative;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.modal-content button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
-/* ------------------------------------------------------------------------------------------------------ */
-/* Close button for modals */
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-    font-size: 24px;
-}
-
 /* General body adjustments */
 body {
     margin: 0;
@@ -910,3 +860,222 @@ body {
     font-family: Arial, sans-serif;
 }
 
+/* Force modals to align inputs vertically */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 1000;
+    overflow-y: auto;
+    max-height: 90vh;
+    box-sizing: border-box;
+}
+
+.user-modal-content {
+    display: flex !important;
+    flex-direction: column !important; /* Ensure vertical stacking */
+    gap: 15px !important;             /* Add space between inputs */
+    align-items: stretch !important; /* Stretch elements to full width */
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Force inputs to stack vertically */
+.user-modal-content input,
+.user-modal-content button {
+    display: block !important;   /* Ensure block-level display */
+    width: 100% !important;      /* Full width of parent */
+    margin: 0;                   /* Remove margin */
+    padding: 12px;               /* Padding for usability */
+    font-size: 14px;             /* Standard font size */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Add hover effect for buttons */
+.user-modal-content button:hover {
+    background-color: #0056b3;
+    cursor: pointer;
+}
+
+/* Close button styling */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #333;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* Force the modal content to stack elements vertically */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; /* Full width on smaller screens */
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 1000;
+    overflow-y: auto;
+    max-height: 90vh;
+    box-sizing: border-box;
+}
+
+/* Modal Content */
+.user-modal-content {
+    display: flex !important;
+    flex-direction: column !important; /* Stack children vertically */
+    gap: 15px !important;             /* Add space between children */
+    width: 100%;
+    align-items: stretch;             /* Stretch inputs and buttons */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Form Styling */
+form {
+    display: flex !important;
+    flex-direction: column !important; /* Stack inputs vertically */
+    gap: 15px;                        /* Add spacing between inputs */
+    width: 100%;
+}
+
+/* Inputs Styling */
+form input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Button Styling */
+form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #333;
+}
+
+.close:hover {
+    color: #000;
+}
+/* Force the modal to be displayed correctly */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90% !important; /* Full width on smaller screens */
+    max-width: 400px !important;
+    background-color: #fff !important;
+    border-radius: 10px !important;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2) !important;
+    padding: 20px !important;
+    z-index: 1000 !important;
+    overflow-y: auto !important;
+    max-height: 90vh !important;
+    box-sizing: border-box !important;
+}
+
+/* Modal Content */
+.user-modal-content {
+    display: flex !important;
+    flex-direction: column !important; /* Stack children vertically */
+    gap: 15px !important;              /* Add space between children */
+    width: 100% !important;
+    align-items: stretch !important;   /* Stretch inputs and buttons */
+    padding: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* Form Styling */
+form {
+    display: flex !important;
+    flex-direction: column !important; /* Stack inputs vertically */
+    gap: 15px !important;              /* Add spacing between inputs */
+    width: 100% !important;
+}
+
+/* Inputs Styling */
+form input {
+    display: block !important;
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    box-sizing: border-box !important;
+}
+
+/* Button Styling */
+form button {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 16px !important;
+    background-color: #007BFF !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease !important;
+}
+
+form button:hover {
+    background-color: #0056b3 !important;
+}
+
+/* Close Button */
+.close {
+    position: absolute !important;
+    top: 10px !important;
+    right: 15px !important;
+    font-size: 18px !important;
+    cursor: pointer !important;
+    color: #333 !important;
+}
+
+.close:hover {
+    color: #000 !important;
+}
