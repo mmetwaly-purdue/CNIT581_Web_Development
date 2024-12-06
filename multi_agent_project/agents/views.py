@@ -52,13 +52,10 @@ def documents_page(request):
 
     return render(request, 'documents.html', {'documents': documents, 'search_query': search_query})
 
-@login_required
 def workflow_page(request):
-    # Simulate logged-in state and pass workflow data
-    logged_in = True  # Replace with actual authentication check
     return render(request, 'user_workflow_page.html', {
-        "logged_in": logged_in,
-        "documents": workflow_data,  # Pass the workflow data to the template
+        "logged_in": request.user.is_authenticated,  # Pass authentication status for frontend display
+        "documents": workflow_data,  # Pass workflow data regardless of login status
     })
 
 def agents_page(request):
@@ -93,33 +90,41 @@ def create_agent(request):
 
         # Extract data and validate
         agent_name = data.get('name')
-        agent_type = data.get('type')
-        agent_description = data.get('description')
+        if not agent_name:
+            return JsonResponse({"message": "Agent name is required."}, status=400)
 
-        if not agent_name or not agent_type or not agent_description:
-            return JsonResponse({"message": "Missing required fields"}, status=400)
+        # Calculate the next ID starting from 5
+        global agent_list
+        next_id = max([agent['id'] for agent in agent_list], default=4) + 1
 
-        # Assuming agent_list is globally available or implement logic to save agent
-        agent_list.append({
+        # Add the new agent to the list
+        new_agent = {
+            "id": next_id,
             "name": agent_name,
-            "type": agent_type,
-            "description": agent_description
-        })
+            "type": "Gemini Based Agent",
+            "description": "Default description",
+        }
+        agent_list.append(new_agent)
 
-        return JsonResponse({"message": "Agent created successfully"}, status=201)
+        return JsonResponse({"message": "Agent created successfully", "agent": new_agent}, status=201)
 
 @csrf_exempt
 def delete_agent(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            agent_id = data.get('agent_id')
+            agent_name = data.get('name')
+            if not agent_name:
+                return JsonResponse({"message": "Agent name is required."}, status=400)
 
-            # Find and delete agent by ID
             global agent_list
-            agent_list = [agent for agent in agent_list if agent['id'] != agent_id]
+            initial_count = len(agent_list)
+            agent_list = [agent for agent in agent_list if agent['name'].lower() != agent_name.lower()]
 
-            return JsonResponse({"message": "Agent deleted successfully."}, status=200)
+            if len(agent_list) < initial_count:
+                return JsonResponse({"message": f"Agent '{agent_name}' deleted successfully."}, status=200)
+            else:
+                return JsonResponse({"message": f"Agent '{agent_name}' not found."}, status=404)
         except Exception as e:
             return JsonResponse({"message": f"Error deleting agent: {str(e)}"}, status=500)
     return JsonResponse({"message": "Invalid request method."}, status=405)

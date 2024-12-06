@@ -225,42 +225,33 @@ $(document).ready(function () {
         selection.removeAllRanges();
     })
 
-    // Handle deletion
+    // Handle deletion in agents page
     $('#delete-agent-mode').on('click', function () {
         const agentName = prompt("Enter the name of the agent to delete:");
         if (!agentName) {
             alert("No agent name provided.");
             return;
         }
-
-        // Find the agent to delete
-        const agentToDelete = Array.from(document.querySelectorAll('.agent h3'))
-            .find(h3 => h3.textContent.toLowerCase() === agentName.toLowerCase());
-
-        if (!agentToDelete) {
-            alert("Agent not found.");
-            return;
-        }
-
-        const agentId = agentToDelete.closest('.agent').querySelector('.view-details').dataset.agentId;
-
-        // Send request to delete agent
+    
+        // Send request to delete agent by name
         $.ajax({
             url: '/delete_agent/',
             method: 'POST',
             headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
             contentType: 'application/json',
-            data: JSON.stringify({ agent_id: parseInt(agentId) }),
+            data: JSON.stringify({ name: agentName }),
             success: function (response) {
                 alert(response.message);
                 window.location.reload(); // Reload page after deletion
             },
-            error: function () {
-                alert('Failed to delete agent.');
+            error: function (error) {
+                console.error('Error:', error);
+                alert('Failed to delete agent: ' + error.responseText);
             }
         });
     });
     
+    //delete agent in workflow page
     $('#delete-agent-button').on('click', function () {
         const selectedAgent = $('#delete-agent-dropdown').val();
     
@@ -512,14 +503,6 @@ $(document).ready(function () {
     $('#createAgentButton').on('click', function () {
         // Collect form data
         const agentName = $('#agent-name').val().trim();
-        const agentType = $('#agent-type').val().trim();
-        const agentDescription = $('#agent-description').val().trim();
-        const searchKeyTerms = $('#search-key-terms').val().trim();
-        const outputStructure = $('#output-structure').val().trim();
-        const addToGroup = $('input[name="add-to-group"]:checked').val() === 'yes';
-        const groupName = addToGroup ? $('#group-name').val().trim() : '';
-        const printLine = $('input[name="print-line"]:checked').val() === 'yes';
-        const autoConnect = $('input[name="auto-connect"]:checked').val() === 'yes';
 
         // Check if agent name is provided
         if (agentName === '') {
@@ -529,27 +512,21 @@ $(document).ready(function () {
 
         // Create an object to store the agent data
         const newAgent = {
-            name: agentName,
-            type: agentType,
-            description: agentDescription,
-            key_terms: searchKeyTerms,
-            output_structure: outputStructure,
-            group: addToGroup ? groupName : null,
-            print_line: printLine,
-            auto_connect: autoConnect
+            name: agentName
         };
 
         // Send the data to the server via POST request
         $.ajax({
             url: '/create_agent/',
             method: 'POST',
+            headers: { 'X-CSRFToken': getCSRFTokenFromCookie() },
             contentType: 'application/json',
             data: JSON.stringify(newAgent),
             success: function (response) {
                 alert('Agent created successfully!');
                 
                 // Refresh the page or redirect to the agents page to see the new agent
-                window.location.href = "/agents";
+                window.location.href = "/agents/";
             },
             error: function (error) {
                 alert('Failed to create the agent. Please try again.');

@@ -67,7 +67,9 @@ Navigate to the homepage at [http://127.0.0.1:8000/](http://127.0.0.1:8000/). Th
 - View existing agents and their configurations.
 - **Create Agents**:  
   Define an agent name, type, description, and the terms it should search for.
-  Example: Create an agent that looks for countries. Name your agent "Country".
+  Example: Create an agent that looks for countries. Name your agent "Country Agent".
+- **Delete Agents**:
+  You can delete any agent. Make sure that the name is accurate. 
 - **Assign Agents to Documents**:
   - Select a document from the dropdown or upload a new one.
   - Click "Add to Workflow" to associate the agent with the document.
