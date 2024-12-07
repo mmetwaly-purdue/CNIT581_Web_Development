@@ -14,7 +14,10 @@ Clone the project repository to your local machine:
 git clone CNIT581_Web_Development
 cd CNIT581_Web_Development/multi_agent_project
 ```
-
+If already installed, just:
+```bash
+cd CNIT581_Web_Development/multi_agent_project
+```
 ### **2. Install Python Dependencies**
 Ensure you have Python installed. Use the provided `requirements.txt` file to install project dependencies:
 ```bash
