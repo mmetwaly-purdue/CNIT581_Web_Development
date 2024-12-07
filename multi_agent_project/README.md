@@ -18,7 +18,17 @@ If already installed, just:
 ```bash
 cd CNIT581_Web_Development/multi_agent_project
 ```
-### **2. Install Python Dependencies**
+
+### **2.1 Virtual Environment Activation**
+Ensure to activate the virtual environment:
+```bash
+source venv/bin/activate
+```
+or
+```cmd
+venv/bin/activate
+```
+### **2.2 Install Python Dependencies**
 Ensure you have Python installed. Use the provided `requirements.txt` file to install project dependencies:
 ```bash
 pip install -r requirements.txt
