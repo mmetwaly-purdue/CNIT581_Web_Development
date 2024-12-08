@@ -101,7 +101,7 @@ Navigate to the homepage at [http://127.0.0.1:8000/](http://127.0.0.1:8000/). Th
 - **Generate Summary**:
   Produce a summary of annotations, connections, and workflows.
 
-#### **Testing Use Case**
+#### **Testing Use Case - User Study**
 For testing, use the pre-uploaded documents and assign specific agents:
 - Assign `name agent` to `cia11.txt`.
 - Assign `address agent` to `cia31.txt`.
@@ -112,13 +112,30 @@ For testing, use the pre-uploaded documents and assign specific agents:
 Repeat the process of adding agents and documents until your workflow is complete.
 
 #### **Testing Use Case - continued**
-Perform analysis on agent-document blocks.
+Answer the Question below by performing analysis on agent-document blocks.
+**Question**
+"What is the alias used by Tom Koracick after entering the USA in 1993?" 
+**Analysis**
+You are allowed to perform your analysis in any way: (You can do the following if you would like)
 - Make connections by selecting agent-document blocks from list.
 - Edit said connections by selection connection form list.
 - Delete agent-documentblock by selecting agent-document block from list. (Make sure to delete its connections beforehand)
 - Run gemini on agent-document blocks. This will highlight the desired text. 
 - Press on make annotations button after running gemini to make own annotations on text. 
 ---
+
+#### **Testing Use Case - continued**
+Please submit your answer to me on teams along with an answer to the following questions.
+1. How many times did you use Gemini to annotate the agent-document blocks?
+(never) 0 - 1 - 2 - 3 - 4 - 5 (Ran Gemini on all agent-document blocks)
+2. I believe that to answer the question Gemini annotations are needed?
+(Not at all) 1 - 2 - 3 - 4 - 5 (Absoultely true)
+3. The website usability was helpful in finding the answer to the question faster?
+(Not at all) 1 - 2 - 3 - 4 - 5 (Absoultely true)
+4. I believe that to answer the question I need my own annotations?
+(Not at all) 1 - 2 - 3 - 4 - 5 (Absoultely true)
+5. If Gemini can provide you the answer completely without having annotations would you prefer that?
+(Text Answer)
 
 ## **Developer Notes**
 - **Refreshing the Workflow Page**:
